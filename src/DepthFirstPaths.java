@@ -1,22 +1,22 @@
-
 import java.util.Stack;
 
 
 public class DepthFirstPaths {
-	private int numOfKnot = 0;
-	private boolean[] marked;    
-    private int[] edgeTo;        
-    private final int s;         
-    
+    private final int s;
+    private int numOfKnot = 0;
+    private boolean[] marked;
+    private int[] edgeTo;
+
     public DepthFirstPaths(Graph G, int s) {
         this.s = s;
         edgeTo = new int[G.V()];
         marked = new boolean[G.V()];
         dfs(G, s);
     }
-    
+
     /**
      * пошук в глибину
+     *
      * @param G - граф
      * @param v - dfs з вершини v
      */
@@ -29,16 +29,17 @@ public class DepthFirstPaths {
             }
         }
     }
-    
+
     /**
      * Чи присутній шлях з v в s, що задана конструктором
+     *
      * @param v - вершина до чкої шукаємо шлях
      * @return true якщо є шлях, false якщо немає
      */
     public boolean hasPathTo(int v) {
         return marked[v];
     }
-    
+
     /**
      * повертає шлях між s та v; null якщо шляху немає
      */
@@ -51,10 +52,10 @@ public class DepthFirstPaths {
         numOfKnot = path.capacity();
         return path;
     }
-    
+
     public int getNum() {
-		return numOfKnot;
-	}
-    
+        return numOfKnot;
+    }
+
 
 }

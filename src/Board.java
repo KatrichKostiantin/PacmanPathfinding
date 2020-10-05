@@ -16,7 +16,7 @@ public class Board extends JPanel implements ActionListener {
     private final int PACMAN_ANIM_COUNT = 4;
     private final int MAX_GHOSTS = 12;
     private final int PACMAN_SPEED = 6;
-    private final short levelData[] = {
+    private final short[] levelData = {
             19, 26, 26, 26, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 22,
             21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
             21, 0, 0, 0, 17, 16, 16, 16, 16, 16, 16, 16, 16, 16, 20,
@@ -33,7 +33,7 @@ public class Board extends JPanel implements ActionListener {
             1, 25, 24, 24, 24, 24, 24, 24, 24, 24, 16, 16, 16, 18, 20,
             9, 8, 8, 8, 8, 8, 8, 8, 8, 8, 25, 24, 24, 24, 28
     };
-    private final int validSpeeds[] = {1, 2, 3, 4, 6, 8};
+    private final int[] validSpeeds = {1, 2, 3, 4, 6, 8};
     private final int maxSpeed = 6;
     private Dimension d;
     private Image ii;
@@ -74,7 +74,6 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void initVariables() {
-
         screenData = new short[N_BLOCKS * N_BLOCKS];
         mazeColor = new Color(5, 100, 5);
         d = new Dimension(400, 400);
@@ -206,7 +205,7 @@ public class Board extends JPanel implements ActionListener {
 
         for (i = 0; i < N_GHOSTS; i++) {
             if (ghost_x[i] % BLOCK_SIZE == 0 && ghost_y[i] % BLOCK_SIZE == 0) {
-                pos = ghost_x[i] / BLOCK_SIZE + N_BLOCKS * (int) (ghost_y[i] / BLOCK_SIZE);
+                pos = ghost_x[i] / BLOCK_SIZE + N_BLOCKS * (ghost_y[i] / BLOCK_SIZE);
 
                 count = 0;
 
@@ -289,7 +288,7 @@ public class Board extends JPanel implements ActionListener {
         }
 
         if (pacman_x % BLOCK_SIZE == 0 && pacman_y % BLOCK_SIZE == 0) {
-            pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (int) (pacman_y / BLOCK_SIZE);
+            pos = pacman_x / BLOCK_SIZE + N_BLOCKS * (pacman_y / BLOCK_SIZE);
             ch = screenData[pos];
 
             if ((ch & 16) != 0) {

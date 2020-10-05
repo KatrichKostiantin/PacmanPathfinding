@@ -1,6 +1,4 @@
-
-
-public class Point  {
+public class Point {
 
 
     private final double x;
