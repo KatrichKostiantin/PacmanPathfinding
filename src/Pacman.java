@@ -5,17 +5,19 @@ import java.awt.*;
 import java.util.List;
 
 public class Pacman {
-    private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
-    private Image pacman3up, pacman3down, pacman3left, pacman3right;
-    private Image pacman4up, pacman4down, pacman4left, pacman4right;
-
     static final int PACMAN_ANIM_COUNT = 4;
+    private static final int ANIMATION_STEPS = 5;
     Board board;
     List<Integer> path;
     int animationCount = 0;
     int pacmanStep = 0;
+    int additionAnimationX = 0;
+    int additionAnimationY = 0;
+    private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
+    private Image pacman3up, pacman3down, pacman3left, pacman3right;
+    private Image pacman4up, pacman4down, pacman4left, pacman4right;
     private int pacman_x, pacman_y;
-    private int directionPacmanX, dilationPacmanY;
+    private int directionPacmanX, directionPacmanY;
     private int pacmanAnimPos = 0;
 
     public Pacman(SearchPath searchPath, int finishPoint) {
@@ -57,7 +59,7 @@ public class Pacman {
 
     private void movePacmanTo(int j, int i) {
         directionPacmanX = (i - pacman_x);
-        dilationPacmanY = (j - pacman_y);
+        directionPacmanY = (j - pacman_y);
 
         pacman_x = i;
         pacman_y = j;
@@ -65,16 +67,18 @@ public class Pacman {
     }
 
     public void drawPacmanEating(Graphics2D g2d) {
+        additionAnimationX = -1 * directionPacmanX * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
+        additionAnimationY = -1 * directionPacmanY * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
         pacmanAnimPos++;
         pacmanAnimPos %= PACMAN_ANIM_COUNT;
         if (directionPacmanX == -1) {
-            drawPacmanEatingLeft(g2d, pacman_x * Board.BLOCK_SIZE, pacman_y * Board.BLOCK_SIZE);
+            drawPacmanEatingLeft(g2d, pacman_x * Board.BLOCK_SIZE + additionAnimationX, pacman_y * Board.BLOCK_SIZE + additionAnimationY);
         } else if (directionPacmanX == 1) {
-            drawPacmanEatingRight(g2d, pacman_x * Board.BLOCK_SIZE, pacman_y * Board.BLOCK_SIZE);
-        } else if (dilationPacmanY == -1) {
-            drawPacmanEatingUp(g2d, pacman_x * Board.BLOCK_SIZE, pacman_y * Board.BLOCK_SIZE);
+            drawPacmanEatingRight(g2d, pacman_x * Board.BLOCK_SIZE + additionAnimationX, pacman_y * Board.BLOCK_SIZE + additionAnimationY);
+        } else if (directionPacmanY == -1) {
+            drawPacmanEatingUp(g2d, pacman_x * Board.BLOCK_SIZE + additionAnimationX, pacman_y * Board.BLOCK_SIZE + additionAnimationY);
         } else {
-            drawPacmanEatingDown(g2d, pacman_x * Board.BLOCK_SIZE, pacman_y * Board.BLOCK_SIZE);
+            drawPacmanEatingDown(g2d, pacman_x * Board.BLOCK_SIZE + additionAnimationX, pacman_y * Board.BLOCK_SIZE + additionAnimationY);
         }
     }
 
@@ -148,7 +152,7 @@ public class Pacman {
 
     public void step(Graphics2D g2d) {
         drawPacmanEating(g2d);
-        animationCount %= 5;
+        animationCount %= ANIMATION_STEPS;
         if (animationCount++ == 0)
             movePacman();
     }
