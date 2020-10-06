@@ -1,3 +1,4 @@
+import supporting.BreadthFirstPaths;
 import supporting.DepthFirstPaths;
 import supporting.Graph;
 import supporting.Point;

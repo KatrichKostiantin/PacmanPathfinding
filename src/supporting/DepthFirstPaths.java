@@ -6,20 +6,21 @@ import java.util.List;
 
 
 public class DepthFirstPaths implements SearchPath {
-    private final int startPosition;
-    private int numOfKnot = 0;
-    private boolean[] marked;
-    private int[] edgeTo;
-    private int stepsToFinish = 0;
-    private int countOfSteps = 0;
-    int endPosition;
+    public final int startPosition;
+    public int numOfKnot = 0;
+    public boolean[] marked;
+    public int[] edgeTo;
+    public Graph graph;
+    public int stepsToFinish = 0;
+    public int countOfSteps = 0;
+    public int endPosition;
 
     public DepthFirstPaths(Graph G, int startPosition, int endPosition) {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         edgeTo = new int[G.V()];
         marked = new boolean[G.V()];
-        dfs(G, startPosition);
+        dfs();
     }
 
     /**
@@ -28,17 +29,17 @@ public class DepthFirstPaths implements SearchPath {
      * @param G - граф
      * @param v - dfs з вершини v
      */
-    private void dfs(Graph G, int v) {
-        marked[v] = true;
-        for (int w : G.adj(v)) {
+    private void dfs() {
+        marked[startPosition] = true;
+        for (int w : graph.adj(startPosition)) {
             if (!marked[w]) {
-                edgeTo[w] = v;
+                edgeTo[w] = startPosition;
 
                 countOfSteps++;
                 if(w == endPosition)
                     stepsToFinish = countOfSteps;
 
-                dfs(G, w);
+                dfs();
             }
         }
     }

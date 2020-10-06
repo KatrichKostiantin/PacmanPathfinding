@@ -3,14 +3,14 @@ package supporting;
 import java.util.*;
 
 public class BreadthFirstPaths implements SearchPath {
-    private final int startPosition;
-    ArrayDeque<Couple> deque;
-    private boolean[] marked;
-    private int[] edgeTo;
-    private int[] distTo;
-    private Point[] coords;
-    private int numOfKnot = 0;
-    private Graph graph;
+    public final int startPosition;
+    public ArrayDeque<Couple> deque;
+    public boolean[] marked;
+    public int[] edgeTo;
+    public int[] distTo;
+    public Point[] coords;
+    public int numOfKnot = 0;
+    public Graph graph;
     private int stepsToFinish = 0;
     private int countOfSteps = 0;
     int endPosition;
@@ -24,27 +24,6 @@ public class BreadthFirstPaths implements SearchPath {
         distTo = new int[graph.V()];
         edgeTo = new int[graph.V()];
         marked = new boolean[graph.V()];
-        bfs();
-    }
-
-    private void bfs() {
-        deque.add(new Couple(0, startPosition));
-        marked[startPosition] = true;
-        distTo[startPosition] = 0;
-        while (!deque.isEmpty()) {
-            Couple point = deque.poll();
-            for (int w : graph.adj(point.v)) {
-                if (!marked[w]) {
-                    deque.add(new Couple(point.v, w));
-                    marked[w] = true;
-                    edgeTo[w] = point.v;
-                    distTo[w] = distTo[point.v] + 1;
-                    countOfSteps++;
-                    if(w == endPosition)
-                        stepsToFinish = countOfSteps;
-                }
-            }
-        }
     }
 
     public int getStepsToFinish() {

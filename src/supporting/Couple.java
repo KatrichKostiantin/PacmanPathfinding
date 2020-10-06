@@ -1,9 +1,10 @@
 package supporting;
 
 public class Couple {
-    int e, v;
+    public int e;
+	public int v;
 
-    Couple(int e, int v) {
+    public Couple(int e, int v) {
         this.e = e;
         this.v = v;
     }

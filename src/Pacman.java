@@ -1,14 +1,19 @@
+import supporting.BreadthFirstPaths;
+import supporting.Couple;
+import supporting.DepthFirstPaths;
+import supporting.Graph;
 import supporting.SearchPath;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Pacman {
     static final int PACMAN_ANIM_COUNT = 4;
     private static final int ANIMATION_STEPS = 5;
     Board board;
-    List<Integer> path;
+    List<Integer> path = new ArrayList<>();
     int animationCount = 0;
     int pacmanStep = 0;
     int additionAnimationX = 0;
@@ -20,11 +25,50 @@ public class Pacman {
     private int pacman_x, pacman_y;
     private int directionPacmanX, directionPacmanY;
     private int pacmanAnimPos = 0;
+    private DepthFirstPaths dfs;
 
-    public Pacman(SearchPath searchPath, int startPosition) {
-        this.startPosition = startPosition;
-        path = searchPath.pathToFinish();
+    public Pacman(SearchPath searchPath, int finishPoint) {
+        //path = searchPath.pathTo(finishPoint);
+      //  bfs((BreadthFirstPaths) searchPath,finishPoint);
+        dfs = (DepthFirstPaths) searchPath;
+        dfs();
         init();
+    }
+    
+    private void bfs(BreadthFirstPaths bfs, int finishPoint) {
+        bfs.deque.add(new Couple(0, bfs.startPosition));
+        bfs.marked[bfs.startPosition] = true;
+        bfs.distTo[bfs.startPosition] = 0;
+        Couple point = null;
+        do{
+            point = bfs.deque.poll();
+            for (int w : bfs.graph.adj(point.v)) {
+                if (!bfs.marked[w]) {
+                    bfs.deque.add(new Couple(point.v, w));
+                    path.add(point.e);
+                    path.add(point.v);
+                    bfs.marked[w] = true;
+                    bfs.edgeTo[w] = point.v;
+                    bfs.distTo[w] = bfs.distTo[point.v] + 1;
+                }
+            }
+        }while (!bfs.deque.isEmpty() && point.v != finishPoint);
+    }
+    
+    
+    private void dfs() {
+        dfs.marked[startPosition] = true;
+        for (int w : dfs.graph.adj(startPosition)) {
+            if (!dfs.marked[w]) {
+                dfs.edgeTo[w] = startPosition;
+
+                dfs.countOfSteps++;
+                if(w == dfs.endPosition)
+                	dfs.stepsToFinish = dfs.countOfSteps;
+                path.add(w);
+                dfs();
+            }
+        }
     }
 
     void setBoard(Board board) {
