@@ -6,7 +6,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
 public class Board extends JPanel implements ActionListener {
-    static final int BLOCK_SIZE = 40;
+    static final int BLOCK_SIZE = 24;
     static final int POINT_SIZE = 6;
     final Color dotColor = new Color(192, 192, 0);
     Dimension d;
