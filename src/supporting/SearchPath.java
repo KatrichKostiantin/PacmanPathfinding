@@ -1,3 +1,5 @@
+package supporting;
+
 import java.util.List;
 
 public interface SearchPath {

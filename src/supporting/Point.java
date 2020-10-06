@@ -1,3 +1,5 @@
+package supporting;
+
 public class Point {
     final int x;
     final int y;

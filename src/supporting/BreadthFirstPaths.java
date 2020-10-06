@@ -1,3 +1,5 @@
+package supporting;
+
 import java.util.ArrayDeque;
 import java.util.Collections;
 import java.util.List;
@@ -41,12 +43,12 @@ public class BreadthFirstPaths implements SearchPath {
         }
     }
 
-   /* public Couple step() {
+   /* public supporting.Couple step() {
         //while (!deque.isEmpty()) {
-        Couple point = deque.poll();
+        supporting.Couple point = deque.poll();
         for (int w : graph.adj(point.v)) {
             if (!marked[w]) {
-                deque.add(new Couple(point.v, w));
+                deque.add(new supporting.Couple(point.v, w));
                 marked[w] = true;
                 edgeTo[w] = point.v;
                 distTo[w] = distTo[point.v] + 1;

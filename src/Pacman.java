@@ -1,21 +1,20 @@
+import supporting.SearchPath;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
 
 public class Pacman {
-    static final int PACMAN_ANIM_COUNT = 4;
-    static final int PAC_ANIM_DELAY = 2;
-    short[][] screenData;
-    Board board;
-    SearchPath searchPath;
-    int pacmanStep = 0;
-    List<Integer> path;
-    int animationCount = 0;
-    private int[] dx, dy;
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
-    private int pacman_x, pacman_y, delta_pacman_x, delta_pacman_y, finishPoint;
+
+    static final int PACMAN_ANIM_COUNT = 4;
+    Board board;
+    List<Integer> path;
+    int animationCount = 0;
+    int pacmanStep = 0;
+    private int pacman_x, pacman_y;
     private int directionPacmanX, dilationPacmanY;
     private int pacmanAnimPos = 0;
 
@@ -24,9 +23,8 @@ public class Pacman {
         init();
     }
 
-    void setBoard(Board board, short[][] screenData) {
+    void setBoard(Board board) {
         this.board = board;
-        this.screenData = screenData;
     }
 
     void init() {
@@ -66,7 +64,6 @@ public class Pacman {
         System.out.println("pacman_x: " + pacman_x + ", pacman_y: " + pacman_y);
     }
 
-    // region eating
     public void drawPacmanEating(Graphics2D g2d) {
         pacmanAnimPos++;
         pacmanAnimPos %= PACMAN_ANIM_COUNT;
@@ -155,5 +152,4 @@ public class Pacman {
         if (animationCount++ == 0)
             movePacman();
     }
-    //end region
 }

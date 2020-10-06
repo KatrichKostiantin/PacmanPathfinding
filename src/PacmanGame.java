@@ -1,3 +1,7 @@
+import supporting.BreadthFirstPaths;
+import supporting.Graph;
+import supporting.Point;
+
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
@@ -26,7 +30,7 @@ public class PacmanGame extends JFrame {
 
     public PacmanGame() {
         Graph mainGraph = buildGraphOnMatrix(levelData);
-        Point randomPoint;
+        supporting.Point randomPoint;
         do {
             randomPoint = new Point(random.nextInt(15), random.nextInt(15));
             if (levelData[randomPoint.y][randomPoint.x] != 0)

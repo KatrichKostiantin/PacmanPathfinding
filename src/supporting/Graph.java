@@ -1,3 +1,5 @@
+package supporting;
+
 public class Graph {
 
     private final int V;
@@ -6,7 +8,7 @@ public class Graph {
 
     /**
      * Створюємо порожній граф розмірності V
-     * ініціалізуємо масив порожніми списками типу Bag
+     * ініціалізуємо масив порожніми списками типу supporting.Bag
      *
      * @param V - кількість вершин
      */

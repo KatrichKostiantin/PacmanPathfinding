@@ -12,13 +12,13 @@ public class Board extends JPanel implements ActionListener {
     Dimension d;
     Color mazeColor;
     Timer timer;
-    short[][] screenData;
+    public short[][] screenData;
     Pacman pacman;
 
     public Board(short[][] screenData, Pacman pacman) {
         this.screenData = screenData.clone();
         this.pacman = pacman;
-        pacman.setBoard(this, screenData);
+        pacman.setBoard(this);
         initVariables();
         initBoard();
     }
