@@ -3,7 +3,6 @@ import java.awt.*;
 import java.util.Random;
 
 public class PacmanGame extends JFrame {
-    Random random = new Random();
     final short[][] levelData = {
             {0, 0, 0, 5, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 5, 0, 0, 0, 0, 0, 15, 0, 3, 10, 10, 6, 0},
@@ -22,11 +21,23 @@ public class PacmanGame extends JFrame {
             {0, 9, 10, 10, 14, 0, 0, 9, 12, 0, 0, 11, 10, 10, 12, 0},
             {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };
+    Pacman pacman;
+    Random random = new Random();
 
     public PacmanGame() {
         Graph mainGraph = buildGraphOnMatrix(levelData);
-        Point randomPoint = new Point(random.nextInt(15), random.nextInt(15));
-        levelData[randomPoint.y][randomPoint.x] = 16;
+        Point randomPoint;
+        do {
+            randomPoint = new Point(random.nextInt(15), random.nextInt(15));
+            if (levelData[randomPoint.y][randomPoint.x] != 0)
+                continue;
+
+            levelData[randomPoint.y][randomPoint.x] = 16;
+            break;
+        } while (true);
+
+        pacman = new Pacman(new BreadthFirstPaths(mainGraph, 0), randomPoint.y * levelData.length + randomPoint.x);
+
         initUI();
     }
 
@@ -48,17 +59,8 @@ public class PacmanGame extends JFrame {
         return graph;
     }
 
-    private int countVOnMatrix(short[][] levelData) {
-        int res = 0;
-        for (short[] levelDatum : levelData)
-            for (short i : levelDatum)
-                if (i == 0)
-                    res++;
-        return res;
-    }
-
     private void initUI() {
-        Board board = new Board(levelData);
+        Board board = new Board(levelData, pacman);
         add(board);
         setTitle("Pacman");
         setDefaultCloseOperation(EXIT_ON_CLOSE);

@@ -1,4 +1,5 @@
+import java.util.List;
+
 public interface SearchPath {
-    Couple step();
-    Iterable<Integer> pathTo(int v);
+    List<Integer> pathTo(int v);
 }

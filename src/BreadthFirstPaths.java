@@ -1,7 +1,9 @@
 import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 
-public class BreadthFirstPaths implements SearchPath{
+public class BreadthFirstPaths implements SearchPath {
     private final int startPosition;
     ArrayDeque<Couple> deque;
     private boolean[] marked;
@@ -23,12 +25,23 @@ public class BreadthFirstPaths implements SearchPath{
     }
 
     private void bfs() {
-        deque.add(new Couple(0 , startPosition));
+        deque.add(new Couple(0, startPosition));
         marked[startPosition] = true;
         distTo[startPosition] = 0;
+        while (!deque.isEmpty()) {
+            Couple point = deque.poll();
+            for (int w : graph.adj(point.v)) {
+                if (!marked[w]) {
+                    deque.add(new Couple(point.v, w));
+                    marked[w] = true;
+                    edgeTo[w] = point.v;
+                    distTo[w] = distTo[point.v] + 1;
+                }
+            }
+        }
     }
 
-    public Couple step() {
+   /* public Couple step() {
         //while (!deque.isEmpty()) {
         Couple point = deque.poll();
         for (int w : graph.adj(point.v)) {
@@ -41,7 +54,7 @@ public class BreadthFirstPaths implements SearchPath{
         }
         return point;
         //}
-    }
+    }*/
 
 
     public int getNum() {
@@ -61,12 +74,14 @@ public class BreadthFirstPaths implements SearchPath{
     /**
      * повертає шлях між s та v; null якщо шляху немає
      */
-    public Iterable<Integer> pathTo(int v) {
+    public List<Integer> pathTo(int v) {
         if (!hasPathTo(v)) return null;
-        Stack<Integer> path = new Stack<Integer>();
+        List<Integer> path = new Stack<Integer>();
+        path.add(v);
         for (int x = v; x != startPosition; x = edgeTo[x])
-            path.push(x);
-        path.push(startPosition);
+            path.add(x);
+        path.add(startPosition);
+        Collections.reverse(path);
         return path;
     }
 }

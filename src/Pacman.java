@@ -1,30 +1,32 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.List;
 
 public class Pacman {
     static final int PACMAN_ANIM_COUNT = 4;
     static final int PAC_ANIM_DELAY = 2;
-    int pacAnimCount = PAC_ANIM_DELAY;
-    int pacAnimDir = 1;
     short[][] screenData;
     Board board;
     SearchPath searchPath;
+    int pacmanStep = 0;
+    List<Integer> path;
+    int animationCount = 0;
     private int[] dx, dy;
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
     private int pacman_x, pacman_y, delta_pacman_x, delta_pacman_y, finishPoint;
-    private int req_dx, req_dy, directionPacmanX, dilationPacmanY;
+    private int directionPacmanX, dilationPacmanY;
     private int pacmanAnimPos = 0;
 
-    public Pacman(short[][] screenData, Board board) {
-        this.screenData = screenData;
-        this.board = board;
+    public Pacman(SearchPath searchPath, int finishPoint) {
+        path = searchPath.pathTo(finishPoint);
         init();
     }
 
-    void setSearchPathMethod(SearchPath searchPath) {
-        this.searchPath = searchPath;
+    void setBoard(Board board, short[][] screenData) {
+        this.board = board;
+        this.screenData = screenData;
     }
 
     void init() {
@@ -48,103 +50,110 @@ public class Pacman {
     }
 
     void movePacman() {
-        Iterable<Integer> path = searchPath.pathTo(finishPoint);
-        for (Integer point : path) {
+        int point = 0;
+        if (pacmanStep < path.size()) {
+            point = path.get(pacmanStep++);
             movePacmanTo(point / 16, point % 16);
         }
-        /*if (screenData[pacman_y][pacman_x] == 16) {
-            win();
-        }*/
-
     }
 
     private void movePacmanTo(int j, int i) {
+        directionPacmanX = (i - pacman_x);
+        dilationPacmanY = (j - pacman_y);
 
+        pacman_x = i;
+        pacman_y = j;
+        System.out.println("pacman_x: " + pacman_x + ", pacman_y: " + pacman_y);
     }
 
-    public void draw(Graphics2D g2d) {
+    // region eating
+    public void drawPacmanEating(Graphics2D g2d) {
         pacmanAnimPos++;
         pacmanAnimPos %= PACMAN_ANIM_COUNT;
         if (directionPacmanX == -1) {
-            drawPacmanLeft(g2d);
+            drawPacmanEatingLeft(g2d, pacman_x * Board.BLOCK_SIZE, pacman_y * Board.BLOCK_SIZE);
         } else if (directionPacmanX == 1) {
-            drawPacmanRight(g2d);
+            drawPacmanEatingRight(g2d, pacman_x * Board.BLOCK_SIZE, pacman_y * Board.BLOCK_SIZE);
         } else if (dilationPacmanY == -1) {
-            drawPacmanUp(g2d);
+            drawPacmanEatingUp(g2d, pacman_x * Board.BLOCK_SIZE, pacman_y * Board.BLOCK_SIZE);
         } else {
-            drawPacmanDown(g2d);
+            drawPacmanEatingDown(g2d, pacman_x * Board.BLOCK_SIZE, pacman_y * Board.BLOCK_SIZE);
         }
     }
 
-    private void drawPacmanUp(Graphics2D g2d) {
+    private void drawPacmanEatingUp(Graphics2D g2d, int x, int y) {
         switch (pacmanAnimPos) {
             case 1:
-                g2d.drawImage(pacman2up, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman2up, x, y, board);
                 break;
             case 2:
-                g2d.drawImage(pacman3up, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman3up, x, y, board);
                 break;
             case 3:
-                g2d.drawImage(pacman4up, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman4up, x, y, board);
                 break;
             default:
-                g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman1, x, y, board);
                 break;
         }
     }
 
-    private void drawPacmanDown(Graphics2D g2d) {
+    private void drawPacmanEatingDown(Graphics2D g2d, int x, int y) {
         switch (pacmanAnimPos) {
             case 1:
-                g2d.drawImage(pacman2down, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman2down, x, y, board);
                 break;
             case 2:
-                g2d.drawImage(pacman3down, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman3down, x, y, board);
                 break;
             case 3:
-                g2d.drawImage(pacman4down, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman4down, x, y, board);
                 break;
             default:
-                g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman1, x, y, board);
                 break;
         }
     }
 
-    private void drawPacmanLeft(Graphics2D g2d) {
+    private void drawPacmanEatingLeft(Graphics2D g2d, int x, int y) {
         switch (pacmanAnimPos) {
             case 1:
-                g2d.drawImage(pacman2left, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman2left, x, y, board);
                 break;
             case 2:
-                g2d.drawImage(pacman3left, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman3left, x, y, board);
                 break;
             case 3:
-                g2d.drawImage(pacman4left, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman4left, x, y, board);
                 break;
             default:
-                g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman1, x, y, board);
                 break;
         }
     }
 
-    private void drawPacmanRight(Graphics2D g2d) {
+    private void drawPacmanEatingRight(Graphics2D g2d, int x, int y) {
         switch (pacmanAnimPos) {
             case 1:
-                g2d.drawImage(pacman2right, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman2right, x, y, board);
                 break;
             case 2:
-                g2d.drawImage(pacman3right, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman3right, x, y, board);
                 break;
             case 3:
-                g2d.drawImage(pacman4right, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman4right, x, y, board);
                 break;
             default:
-                g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, board);
+                g2d.drawImage(pacman1, x, y, board);
                 break;
         }
     }
 
-    public void setFinishPoint(int i, int j) {
-        finishPoint = j * screenData.length + i;
+    public void step(Graphics2D g2d) {
+        drawPacmanEating(g2d);
+        animationCount %= 5;
+        if (animationCount++ == 0)
+            movePacman();
     }
+    //end region
 }

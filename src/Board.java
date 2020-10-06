@@ -15,8 +15,10 @@ public class Board extends JPanel implements ActionListener {
     short[][] screenData;
     Pacman pacman;
 
-    public Board(short[][] screenData) {
+    public Board(short[][] screenData, Pacman pacman) {
         this.screenData = screenData.clone();
+        this.pacman = pacman;
+        pacman.setBoard(this, screenData);
         initVariables();
         initBoard();
     }
@@ -25,7 +27,6 @@ public class Board extends JPanel implements ActionListener {
         addKeyListener(new TAdapter());
         setFocusable(true);
         setBackground(Color.black);
-        pacman = new Pacman(screenData, this);
         pacman.initPacmanImages();
     }
 
@@ -42,13 +43,6 @@ public class Board extends JPanel implements ActionListener {
         super.addNotify();
     }
 
-    private void playGame(Graphics2D g2d) {
-        pacman.draw(g2d);
-        checkMaze();
-    }
-
-    private void checkMaze() {
-    }
 
     private void drawMaze(Graphics2D g2d) {
 
@@ -82,7 +76,6 @@ public class Board extends JPanel implements ActionListener {
                 if ((screenData[i][j] & 16) != 0) {
                     g2d.setColor(dotColor);
                     g2d.fillOval(x + BLOCK_SIZE / 2 - POINT_SIZE / 2, y + BLOCK_SIZE / 2 - POINT_SIZE / 2, POINT_SIZE, POINT_SIZE);
-                    pacman.setFinishPoint(i, j);
                 }
             }
         }
@@ -95,12 +88,11 @@ public class Board extends JPanel implements ActionListener {
     }
 
     private void doDrawing(Graphics g) {
-
         Graphics2D g2d = (Graphics2D) g;
         g2d.setColor(Color.black);
 
         drawMaze(g2d);
-        playGame(g2d);
+        pacman.step(g2d);
 
         Toolkit.getDefaultToolkit().sync();
         g2d.dispose();
@@ -130,7 +122,6 @@ public class Board extends JPanel implements ActionListener {
 
         @Override
         public void keyReleased(KeyEvent e) {
-
         }
     }
 }
