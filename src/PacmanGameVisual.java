@@ -34,9 +34,8 @@ public class PacmanGameVisual extends JFrame {
         levelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = searchEmptyPoint(levelData);
 
-
         pacman = new Pacman(new DepthFirstPaths(mainGraph, randomStart.y * levelData.length + randomStart.x, randomEnd.y * levelData.length + randomEnd.x),
-                randomEnd.y * levelData.length + randomEnd.x);
+                randomStart);
 
         initUI();
     }

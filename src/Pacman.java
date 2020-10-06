@@ -1,3 +1,4 @@
+import supporting.Point;
 import supporting.SearchPath;
 
 import javax.swing.*;
@@ -13,7 +14,8 @@ public class Pacman {
     int pacmanStep = 0;
     int additionAnimationX = 0;
     int additionAnimationY = 0;
-    int startPosition;
+    Point startPosition;
+    SearchPath searchPath;
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
@@ -21,9 +23,14 @@ public class Pacman {
     private int directionPacmanX, directionPacmanY;
     private int pacmanAnimPos = 0;
 
-    public Pacman(SearchPath searchPath, int startPosition) {
+    public Pacman(SearchPath searchPath, Point startPosition) {
+        this.searchPath = searchPath;
         this.startPosition = startPosition;
         path = searchPath.pathToFinish();
+        if (path == null) {
+            System.out.println("ERROR");
+            return;
+        }
         init();
     }
 
@@ -33,8 +40,7 @@ public class Pacman {
 
     void init() {
         initPacmanImages();
-        movePacmanTo(startPosition % 16, startPosition / 16);
-
+        movePacmanTo(startPosition.y, startPosition.x);
     }
 
     void initPacmanImages() {
@@ -54,11 +60,12 @@ public class Pacman {
     }
 
     void movePacman() {
-        int point = 0;
+        int point;
         if (pacmanStep < path.size()) {
             point = path.get(pacmanStep++);
             movePacmanTo(point / 16, point % 16);
-        }
+        } else
+            board.stop();
     }
 
     private void movePacmanTo(int j, int i) {
@@ -159,5 +166,9 @@ public class Pacman {
         animationCount %= ANIMATION_STEPS;
         if (animationCount++ == 0)
             movePacman();
+    }
+
+    public int getCountOfStepsToFind() {
+        return searchPath.getStepsToFinish();
     }
 }
