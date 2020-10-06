@@ -34,6 +34,7 @@ public class Pacman {
     void init() {
         initPacmanImages();
         movePacmanTo(startPosition % 16, startPosition / 16);
+
     }
 
     void initPacmanImages() {
