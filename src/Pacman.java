@@ -13,6 +13,7 @@ public class Pacman {
     int pacmanStep = 0;
     int additionAnimationX = 0;
     int additionAnimationY = 0;
+    int startPosition;
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
@@ -20,8 +21,9 @@ public class Pacman {
     private int directionPacmanX, directionPacmanY;
     private int pacmanAnimPos = 0;
 
-    public Pacman(SearchPath searchPath, int finishPoint) {
-        path = searchPath.pathTo(finishPoint);
+    public Pacman(SearchPath searchPath, int startPosition) {
+        this.startPosition = startPosition;
+        path = searchPath.pathToFinish();
         init();
     }
 
@@ -31,6 +33,7 @@ public class Pacman {
 
     void init() {
         initPacmanImages();
+        movePacmanTo(startPosition % 16, startPosition / 16);
     }
 
     void initPacmanImages() {

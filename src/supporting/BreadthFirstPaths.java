@@ -11,10 +11,14 @@ public class BreadthFirstPaths implements SearchPath {
     private Point[] coords;
     private int numOfKnot = 0;
     private Graph graph;
+    private int stepsToFinish = 0;
+    private int countOfSteps = 0;
+    int endPosition;
 
-    public BreadthFirstPaths(Graph G, int startPosition) {
+    public BreadthFirstPaths(Graph G, int startPosition, int endPosition) {
         this.graph = G;
         this.startPosition = startPosition;
+        this.endPosition = endPosition;
         deque = new ArrayDeque<>();
         coords = G.COORDS();
         distTo = new int[graph.V()];
@@ -35,26 +39,17 @@ public class BreadthFirstPaths implements SearchPath {
                     marked[w] = true;
                     edgeTo[w] = point.v;
                     distTo[w] = distTo[point.v] + 1;
+                    countOfSteps++;
+                    if(w == endPosition)
+                        stepsToFinish = countOfSteps;
                 }
             }
         }
     }
 
-   /* public supporting.Couple step() {
-        //while (!deque.isEmpty()) {
-        supporting.Couple point = deque.poll();
-        for (int w : graph.adj(point.v)) {
-            if (!marked[w]) {
-                deque.add(new supporting.Couple(point.v, w));
-                marked[w] = true;
-                edgeTo[w] = point.v;
-                distTo[w] = distTo[point.v] + 1;
-            }
-        }
-        return point;
-        //}
-    }*/
-
+    public int getStepsToFinish() {
+        return stepsToFinish;
+    }
 
     public int getNum() {
         return numOfKnot;
@@ -73,11 +68,11 @@ public class BreadthFirstPaths implements SearchPath {
     /**
      * повертає шлях між s та v; null якщо шляху немає
      */
-    public List<Integer> pathTo(int v) {
-        if (!hasPathTo(v)) return null;
+    public List<Integer> pathToFinish() {
+        if (!hasPathTo(endPosition)) return null;
         List<Integer> path = new ArrayList<>();
-        path.add(v);
-        for (int x = v; x != startPosition; x = edgeTo[x])
+        path.add(endPosition);
+        for (int x = endPosition; x != startPosition; x = edgeTo[x])
             path.add(x);
         path.add(startPosition);
         Collections.reverse(path);

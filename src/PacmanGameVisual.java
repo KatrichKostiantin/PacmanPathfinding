@@ -6,7 +6,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
 
-public class PacmanGame extends JFrame {
+public class PacmanGameVisual extends JFrame {
     final short[][] levelData = {
             {0, 0, 0, 5, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 5, 0, 0, 0, 0, 0, 15, 0, 3, 10, 10, 6, 0},
@@ -28,28 +28,35 @@ public class PacmanGame extends JFrame {
     Pacman pacman;
     Random random = new Random();
 
-    public PacmanGame() {
+    public PacmanGameVisual() {
         Graph mainGraph = buildGraphOnMatrix(levelData);
-        supporting.Point randomPoint;
-        do {
-            randomPoint = new Point(random.nextInt(15), random.nextInt(15));
-            if (levelData[randomPoint.y][randomPoint.x] != 0)
-                continue;
+        Point randomEnd = searchEmptyPoint(levelData);
+        levelData[randomEnd.y][randomEnd.x] = 16;
+        Point randomStart = searchEmptyPoint(levelData);
 
-            levelData[randomPoint.y][randomPoint.x] = 16;
-            break;
-        } while (true);
 
-        pacman = new Pacman(new DepthFirstPaths(mainGraph, 0), randomPoint.y * levelData.length + randomPoint.x);
+        pacman = new Pacman(new DepthFirstPaths(mainGraph, randomStart.y * levelData.length + randomStart.x, randomEnd.y * levelData.length + randomEnd.x),
+                randomEnd.y * levelData.length + randomEnd.x);
 
         initUI();
     }
 
     public static void main(String[] args) {
         EventQueue.invokeLater(() -> {
-            var ex = new PacmanGame();
+            var ex = new PacmanGameVisual();
             ex.setVisible(true);
         });
+    }
+
+    private Point searchEmptyPoint(short[][] levelData) {
+        Point randomPoint;
+        do {
+            randomPoint = new Point(random.nextInt(15), random.nextInt(15));
+            if (levelData[randomPoint.y][randomPoint.x] != 0)
+                continue;
+            break;
+        } while (true);
+        return randomPoint;
     }
 
     private Graph buildGraphOnMatrix(short[][] levelData) {

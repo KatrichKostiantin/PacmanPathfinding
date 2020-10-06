@@ -10,9 +10,13 @@ public class DepthFirstPaths implements SearchPath {
     private int numOfKnot = 0;
     private boolean[] marked;
     private int[] edgeTo;
+    private int stepsToFinish = 0;
+    private int countOfSteps = 0;
+    int endPosition;
 
-    public DepthFirstPaths(Graph G, int startPosition) {
+    public DepthFirstPaths(Graph G, int startPosition, int endPosition) {
         this.startPosition = startPosition;
+        this.endPosition = endPosition;
         edgeTo = new int[G.V()];
         marked = new boolean[G.V()];
         dfs(G, startPosition);
@@ -29,9 +33,19 @@ public class DepthFirstPaths implements SearchPath {
         for (int w : G.adj(v)) {
             if (!marked[w]) {
                 edgeTo[w] = v;
+
+                countOfSteps++;
+                if(w == endPosition)
+                    stepsToFinish = countOfSteps;
+
                 dfs(G, w);
             }
         }
+    }
+
+
+    public int getStepsToFinish() {
+        return stepsToFinish;
     }
 
     /**
@@ -47,10 +61,10 @@ public class DepthFirstPaths implements SearchPath {
     /**
      * повертає шлях між s та v; null якщо шляху немає
      */
-    public List<Integer> pathTo(int v) {
-        if (!hasPathTo(v)) return null;
+    public List<Integer> pathToFinish() {
+        if (!hasPathTo(endPosition)) return null;
         List<Integer> path = new ArrayList<>();
-        for (int x = v; x != startPosition; x = edgeTo[x])
+        for (int x = endPosition; x != startPosition; x = edgeTo[x])
             path.add(x);
         path.add(startPosition);
         numOfKnot = path.size();
