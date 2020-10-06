@@ -1,10 +1,10 @@
 public class Point {
 
 
-    private final double x;
-    private final double y;
+    private final int x;
+    private final int y;
 
-    public Point(double d, double e) {
+    public Point(int d, int e) {
         this.x = d;
         this.y = e;
     }

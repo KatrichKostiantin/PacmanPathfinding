@@ -61,5 +61,4 @@ public class BreadthFirstPaths {
         path.push(s);
         return path;
     }
-
 }

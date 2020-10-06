@@ -10,13 +10,13 @@ public class Pacman{
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
-    private int pacman_x, pacman_y, pacmand_x, pacmand_y;
-    private int req_dx, req_dy, view_dx, view_dy;
+    private int pacman_x, pacman_y, delta_pacman_x, delta_pacman_y;
+    private int req_dx, req_dy, directionPacmanX, dilationPacmanY;
     private int pacmanAnimPos = 0;
-    short[] screenData;
+    short[][] screenData;
     Board board;
 
-    public Pacman(short[] screenData, Board board) {
+    public Pacman(short[][] screenData, Board board) {
         this.screenData = screenData;
         this.board = board;
         init();
@@ -42,23 +42,21 @@ public class Pacman{
         pacman4right = new ImageIcon("images/right3.png").getImage();
     }
 
-    private void movePacman() {
-        int pos;
+    void movePacman() {
         short ch;
 
-        if (req_dx == -pacmand_x && req_dy == -pacmand_y) {
-            pacmand_x = req_dx;
-            pacmand_y = req_dy;
-            view_dx = pacmand_x;
-            view_dy = pacmand_y;
+        if (req_dx == -delta_pacman_x && req_dy == -delta_pacman_y) {
+            delta_pacman_x = req_dx;
+            delta_pacman_y = req_dy;
+            directionPacmanX = delta_pacman_x;
+            dilationPacmanY = delta_pacman_y;
         }
 
         if (pacman_x % Board.BLOCK_SIZE == 0 && pacman_y % Board.BLOCK_SIZE == 0) {
-            pos = pacman_x / Board.BLOCK_SIZE + Board.N_BLOCKS * (pacman_y / Board.BLOCK_SIZE);
-            ch = screenData[pos];
+            ch = screenData[pacman_x][pacman_y];
 
             if ((ch & 16) != 0) {
-                screenData[pos] = (short) (ch & 15);
+                screenData[pacman_x][pacman_y] = (short) (ch & 15); //Eat point
             }
 
             if (req_dx != 0 || req_dy != 0) {
@@ -66,34 +64,34 @@ public class Pacman{
                         || (req_dx == 1 && req_dy == 0 && (ch & 4) != 0)
                         || (req_dx == 0 && req_dy == -1 && (ch & 2) != 0)
                         || (req_dx == 0 && req_dy == 1 && (ch & 8) != 0))) {
-                    pacmand_x = req_dx;
-                    pacmand_y = req_dy;
-                    view_dx = pacmand_x;
-                    view_dy = pacmand_y;
+                    delta_pacman_x = req_dx;
+                    delta_pacman_y = req_dy;
+                    directionPacmanX = delta_pacman_x;
+                    dilationPacmanY = delta_pacman_y;
                 }
             }
 
             // Check for standstill
-            if ((pacmand_x == -1 && pacmand_y == 0 && (ch & 1) != 0)
-                    || (pacmand_x == 1 && pacmand_y == 0 && (ch & 4) != 0)
-                    || (pacmand_x == 0 && pacmand_y == -1 && (ch & 2) != 0)
-                    || (pacmand_x == 0 && pacmand_y == 1 && (ch & 8) != 0)) {
-                pacmand_x = 0;
-                pacmand_y = 0;
+            if ((delta_pacman_x == -1 && delta_pacman_y == 0 && (ch & 1) != 0)
+                    || (delta_pacman_x == 1 && delta_pacman_y == 0 && (ch & 4) != 0)
+                    || (delta_pacman_x == 0 && delta_pacman_y == -1 && (ch & 2) != 0)
+                    || (delta_pacman_x == 0 && delta_pacman_y == 1 && (ch & 8) != 0)) {
+                delta_pacman_x = 0;
+                delta_pacman_y = 0;
             }
         }
-        pacman_x = pacman_x + pacmand_x;
-        pacman_y = pacman_y + pacmand_y;
+        pacman_x = pacman_x + delta_pacman_x;
+        pacman_y = pacman_y + delta_pacman_y;
     }
 
 
     public void draw(Graphics2D g2d) {
         doAnim();
-        if (view_dx == -1) {
+        if (directionPacmanX == -1) {
             drawPacnanLeft(g2d);
-        } else if (view_dx == 1) {
+        } else if (directionPacmanX == 1) {
             drawPacmanRight(g2d);
-        } else if (view_dy == -1) {
+        } else if (dilationPacmanY == -1) {
             drawPacmanUp(g2d);
         } else {
             drawPacmanDown(g2d);
@@ -114,7 +112,6 @@ public class Pacman{
     }
 
     private void drawPacmanUp(Graphics2D g2d) {
-
         switch (pacmanAnimPos) {
             case 1:
                 g2d.drawImage(pacman2up, pacman_x + 1, pacman_y + 1, board);
