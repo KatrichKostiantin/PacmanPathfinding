@@ -1,10 +1,13 @@
+import supporting.BreadthFirstPaths;
 import supporting.DepthFirstPaths;
 import supporting.Graph;
 import supporting.Point;
 
+import java.time.Instant;
 import java.util.Random;
 
 public class PacmanGameStatistic {
+    private static final int COUNT_ITERATION = 20;
     final short[][] levelData = {
             {0, 0, 0, 5, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 5, 0, 0, 0, 0, 0, 15, 0, 3, 10, 10, 6, 0},
@@ -33,15 +36,46 @@ public class PacmanGameStatistic {
 
     private void start() {
         Graph mainGraph = buildGraphOnMatrix(levelData);
-        System.out.println(iteration(mainGraph));
+        long timeDFS, timeBFS, stepsDFS = 0, stepsBFS = 0;
+
+        long timeStart = Instant.now().toEpochMilli();
+        for (int i = 0; i < COUNT_ITERATION; i++) {
+            stepsDFS += iterationDFS(mainGraph);
+        }
+        timeDFS = Instant.now().toEpochMilli() - timeStart;
+        stepsDFS /= COUNT_ITERATION;
+
+        timeStart = Instant.now().toEpochMilli();
+        for (int i = 0; i < COUNT_ITERATION; i++) {
+            stepsBFS += iterationBFS(mainGraph);
+        }
+        timeBFS = Instant.now().toEpochMilli() - timeStart;
+        stepsBFS /= COUNT_ITERATION;
+
+        System.out.println("RESULT OF " + COUNT_ITERATION + " ITERATION:\n" +
+                "DFS: Time - " + timeDFS + ", steps - " + stepsDFS + "\n" +
+                "BFS: Time - " + timeBFS + ", steps - " + stepsBFS);
+
     }
 
-    private int iteration(Graph mainGraph) {
+    private int iterationDFS(Graph mainGraph) {
         Point randomEnd = searchEmptyPoint(levelData);
         levelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = searchEmptyPoint(levelData);
 
         pacman = new Pacman(new DepthFirstPaths(mainGraph, randomStart.y * levelData.length + randomStart.x, randomEnd.y * levelData.length + randomEnd.x),
+                randomStart);
+        Board board = new Board(levelData);
+        pacman.setBoard(board);
+        return pacman.getCountOfStepsToFind();
+    }
+
+    private int iterationBFS(Graph mainGraph) {
+        Point randomEnd = searchEmptyPoint(levelData);
+        levelData[randomEnd.y][randomEnd.x] = 16;
+        Point randomStart = searchEmptyPoint(levelData);
+
+        pacman = new Pacman(new BreadthFirstPaths(mainGraph, randomStart.y * levelData.length + randomStart.x, randomEnd.y * levelData.length + randomEnd.x),
                 randomStart);
         Board board = new Board(levelData);
         pacman.setBoard(board);

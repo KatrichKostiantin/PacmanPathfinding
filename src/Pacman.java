@@ -74,7 +74,6 @@ public class Pacman {
 
         pacman_x = i;
         pacman_y = j;
-        System.out.println("pacman_x: " + pacman_x + ", pacman_y: " + pacman_y);
     }
 
     public void drawPacmanEating(Graphics2D g2d) {
