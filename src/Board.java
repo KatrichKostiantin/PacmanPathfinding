@@ -82,6 +82,7 @@ public class Board extends JPanel implements ActionListener {
                 if ((screenData[i][j] & 16) != 0) {
                     g2d.setColor(dotColor);
                     g2d.fillOval(x + BLOCK_SIZE / 2 - POINT_SIZE / 2, y + BLOCK_SIZE / 2 - POINT_SIZE / 2, POINT_SIZE, POINT_SIZE);
+                    pacman.setFinishPoint(i, j);
                 }
             }
         }

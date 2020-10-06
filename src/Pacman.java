@@ -1,30 +1,30 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Pacman{
-    private int[] dx, dy;
+public class Pacman {
     static final int PACMAN_ANIM_COUNT = 4;
     static final int PAC_ANIM_DELAY = 2;
     int pacAnimCount = PAC_ANIM_DELAY;
     int pacAnimDir = 1;
-    private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
-    private Image pacman3up, pacman3down, pacman3left, pacman3right;
-    private Image pacman4up, pacman4down, pacman4left, pacman4right;
-    private int pacman_x, pacman_y, delta_pacman_x, delta_pacman_y;
-    private int req_dx, req_dy, directionPacmanX, dilationPacmanY;
-    private int pacmanAnimPos = 0;
     short[][] screenData;
     Board board;
     SearchPath searchPath;
-
-    void setSearchPathMethod(SearchPath searchPath){
-        this.searchPath = searchPath;
-    }
+    private int[] dx, dy;
+    private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
+    private Image pacman3up, pacman3down, pacman3left, pacman3right;
+    private Image pacman4up, pacman4down, pacman4left, pacman4right;
+    private int pacman_x, pacman_y, delta_pacman_x, delta_pacman_y, finishPoint;
+    private int req_dx, req_dy, directionPacmanX, dilationPacmanY;
+    private int pacmanAnimPos = 0;
 
     public Pacman(short[][] screenData, Board board) {
         this.screenData = screenData;
         this.board = board;
         init();
+    }
+
+    void setSearchPathMethod(SearchPath searchPath) {
+        this.searchPath = searchPath;
     }
 
     void init() {
@@ -48,22 +48,25 @@ public class Pacman{
     }
 
     void movePacman() {
-        Couple couple = searchPath.step();
-            if (screenData[pacman_y][pacman_x] == 16) {
-                win();
-            }
+        Iterable<Integer> path = searchPath.pathTo(finishPoint);
+        for (Integer point : path) {
+            movePacmanTo(point / 16, point % 16);
+        }
+        /*if (screenData[pacman_y][pacman_x] == 16) {
+            win();
+        }*/
+
     }
 
-    private void win() {
-        //TODO
+    private void movePacmanTo(int j, int i) {
+
     }
-
-
 
     public void draw(Graphics2D g2d) {
-        pacmanAnimPos = pacmanAnimPos++ % PACMAN_ANIM_COUNT;
+        pacmanAnimPos++;
+        pacmanAnimPos %= PACMAN_ANIM_COUNT;
         if (directionPacmanX == -1) {
-            drawPacnanLeft(g2d);
+            drawPacmanLeft(g2d);
         } else if (directionPacmanX == 1) {
             drawPacmanRight(g2d);
         } else if (dilationPacmanY == -1) {
@@ -107,7 +110,7 @@ public class Pacman{
         }
     }
 
-    private void drawPacnanLeft(Graphics2D g2d) {
+    private void drawPacmanLeft(Graphics2D g2d) {
         switch (pacmanAnimPos) {
             case 1:
                 g2d.drawImage(pacman2left, pacman_x + 1, pacman_y + 1, board);
@@ -139,5 +142,9 @@ public class Pacman{
                 g2d.drawImage(pacman1, pacman_x + 1, pacman_y + 1, board);
                 break;
         }
+    }
+
+    public void setFinishPoint(int i, int j) {
+        finishPoint = j * screenData.length + i;
     }
 }
