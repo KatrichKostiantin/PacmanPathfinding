@@ -1,9 +1,6 @@
 package supporting;
 
-import java.util.ArrayDeque;
-import java.util.Collections;
-import java.util.List;
-import java.util.Stack;
+import java.util.*;
 
 public class BreadthFirstPaths implements SearchPath {
     private final int startPosition;
@@ -78,7 +75,7 @@ public class BreadthFirstPaths implements SearchPath {
      */
     public List<Integer> pathTo(int v) {
         if (!hasPathTo(v)) return null;
-        List<Integer> path = new Stack<Integer>();
+        List<Integer> path = new ArrayList<>();
         path.add(v);
         for (int x = v; x != startPosition; x = edgeTo[x])
             path.add(x);

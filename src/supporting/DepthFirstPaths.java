@@ -1,19 +1,21 @@
 package supporting;
 
-import java.util.Stack;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 
-public class DepthFirstPaths {
-    private final int s;
+public class DepthFirstPaths implements SearchPath {
+    private final int startPosition;
     private int numOfKnot = 0;
     private boolean[] marked;
     private int[] edgeTo;
 
-    public DepthFirstPaths(Graph G, int s) {
-        this.s = s;
+    public DepthFirstPaths(Graph G, int startPosition) {
+        this.startPosition = startPosition;
         edgeTo = new int[G.V()];
         marked = new boolean[G.V()];
-        dfs(G, s);
+        dfs(G, startPosition);
     }
 
     /**
@@ -45,13 +47,14 @@ public class DepthFirstPaths {
     /**
      * повертає шлях між s та v; null якщо шляху немає
      */
-    public Iterable<Integer> pathTo(int v) {
+    public List<Integer> pathTo(int v) {
         if (!hasPathTo(v)) return null;
-        Stack<Integer> path = new Stack<Integer>();
-        for (int x = v; x != s; x = edgeTo[x])
-            path.push(x);
-        path.push(s);
-        numOfKnot = path.capacity();
+        List<Integer> path = new ArrayList<>();
+        for (int x = v; x != startPosition; x = edgeTo[x])
+            path.add(x);
+        path.add(startPosition);
+        numOfKnot = path.size();
+        Collections.reverse(path);
         return path;
     }
 

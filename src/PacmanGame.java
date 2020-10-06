@@ -1,4 +1,4 @@
-import supporting.BreadthFirstPaths;
+import supporting.DepthFirstPaths;
 import supporting.Graph;
 import supporting.Point;
 
@@ -40,7 +40,7 @@ public class PacmanGame extends JFrame {
             break;
         } while (true);
 
-        pacman = new Pacman(new BreadthFirstPaths(mainGraph, 0), randomPoint.y * levelData.length + randomPoint.x);
+        pacman = new Pacman(new DepthFirstPaths(mainGraph, 0), randomPoint.y * levelData.length + randomPoint.x);
 
         initUI();
     }
@@ -56,8 +56,12 @@ public class PacmanGame extends JFrame {
         Graph graph = new Graph(levelData.length * levelData[0].length);
         for (int y = 0; y < levelData.length - 1; y++) {
             for (int x = 0; x < levelData[y].length - 1; x++) {
-                if (levelData[y][x + 1] == 0) graph.addEdge((y) * levelData.length + x, (y) * levelData.length + x + 1);
-                if (levelData[y + 1][x] == 0) graph.addEdge((y) * levelData.length + x, (y + 1) * levelData.length + x);
+                if (levelData[y][x] == 0) {
+                    if (levelData[y][x + 1] == 0)
+                        graph.addEdge((y) * levelData.length + x, (y) * levelData.length + x + 1);
+                    if (levelData[y + 1][x] == 0)
+                        graph.addEdge((y) * levelData.length + x, (y + 1) * levelData.length + x);
+                }
             }
         }
         return graph;
