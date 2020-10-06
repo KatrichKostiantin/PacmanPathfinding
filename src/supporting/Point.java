@@ -1,8 +1,8 @@
 package supporting;
 
 public class Point {
-    final int x;
-    final int y;
+    final public int x;
+    final public int y;
 
     public Point(int d, int e) {
         this.x = d;
