@@ -1,7 +1,6 @@
 public class Graph {
 
     private final int V;
-    private int portal = 0;
     private Point[] coords;
     private Bag<Integer>[] adj;
 
@@ -16,7 +15,7 @@ public class Graph {
         adj = (Bag<Integer>[]) new Bag[V];
         coords = new Point[V];
         for (int v = 0; v < V; v++)
-            adj[v] = new Bag<Integer>();
+            adj[v] = new Bag<>();
     }
 
     /**
@@ -28,7 +27,6 @@ public class Graph {
     public void addEdge(int v, int w) {
         adj[v].add(w);
         adj[w].add(v);
-        //System.out.println(v+" "+w);
     }
 
     /**

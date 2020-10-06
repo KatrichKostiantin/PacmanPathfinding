@@ -1,8 +1,6 @@
 public class Point {
-
-
-    private final int x;
-    private final int y;
+    final int x;
+    final int y;
 
     public Point(int d, int e) {
         this.x = d;

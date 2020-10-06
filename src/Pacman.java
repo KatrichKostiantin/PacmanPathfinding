@@ -15,6 +15,11 @@ public class Pacman{
     private int pacmanAnimPos = 0;
     short[][] screenData;
     Board board;
+    SearchPath searchPath;
+
+    void setSearchPathMethod(SearchPath searchPath){
+        this.searchPath = searchPath;
+    }
 
     public Pacman(short[][] screenData, Board board) {
         this.screenData = screenData;
@@ -43,50 +48,20 @@ public class Pacman{
     }
 
     void movePacman() {
-        short ch;
-
-        if (req_dx == -delta_pacman_x && req_dy == -delta_pacman_y) {
-            delta_pacman_x = req_dx;
-            delta_pacman_y = req_dy;
-            directionPacmanX = delta_pacman_x;
-            dilationPacmanY = delta_pacman_y;
-        }
-
-        if (pacman_x % Board.BLOCK_SIZE == 0 && pacman_y % Board.BLOCK_SIZE == 0) {
-            ch = screenData[pacman_x][pacman_y];
-
-            if ((ch & 16) != 0) {
-                screenData[pacman_x][pacman_y] = (short) (ch & 15); //Eat point
+        Couple couple = searchPath.step();
+            if (screenData[pacman_y][pacman_x] == 16) {
+                win();
             }
+    }
 
-            if (req_dx != 0 || req_dy != 0) {
-                if (!((req_dx == -1 && req_dy == 0 && (ch & 1) != 0)
-                        || (req_dx == 1 && req_dy == 0 && (ch & 4) != 0)
-                        || (req_dx == 0 && req_dy == -1 && (ch & 2) != 0)
-                        || (req_dx == 0 && req_dy == 1 && (ch & 8) != 0))) {
-                    delta_pacman_x = req_dx;
-                    delta_pacman_y = req_dy;
-                    directionPacmanX = delta_pacman_x;
-                    dilationPacmanY = delta_pacman_y;
-                }
-            }
-
-            // Check for standstill
-            if ((delta_pacman_x == -1 && delta_pacman_y == 0 && (ch & 1) != 0)
-                    || (delta_pacman_x == 1 && delta_pacman_y == 0 && (ch & 4) != 0)
-                    || (delta_pacman_x == 0 && delta_pacman_y == -1 && (ch & 2) != 0)
-                    || (delta_pacman_x == 0 && delta_pacman_y == 1 && (ch & 8) != 0)) {
-                delta_pacman_x = 0;
-                delta_pacman_y = 0;
-            }
-        }
-        pacman_x = pacman_x + delta_pacman_x;
-        pacman_y = pacman_y + delta_pacman_y;
+    private void win() {
+        //TODO
     }
 
 
+
     public void draw(Graphics2D g2d) {
-        doAnim();
+        pacmanAnimPos = pacmanAnimPos++ % PACMAN_ANIM_COUNT;
         if (directionPacmanX == -1) {
             drawPacnanLeft(g2d);
         } else if (directionPacmanX == 1) {
@@ -95,19 +70,6 @@ public class Pacman{
             drawPacmanUp(g2d);
         } else {
             drawPacmanDown(g2d);
-        }
-    }
-
-    private void doAnim() {
-        pacAnimCount--;
-
-        if (pacAnimCount <= 0) {
-            pacAnimCount = PAC_ANIM_DELAY;
-            pacmanAnimPos = pacmanAnimPos + pacAnimDir;
-
-            if (pacmanAnimPos == (PACMAN_ANIM_COUNT - 1) || pacmanAnimPos == 0) {
-                pacAnimDir = -pacAnimDir;
-            }
         }
     }
 
@@ -129,7 +91,6 @@ public class Pacman{
     }
 
     private void drawPacmanDown(Graphics2D g2d) {
-
         switch (pacmanAnimPos) {
             case 1:
                 g2d.drawImage(pacman2down, pacman_x + 1, pacman_y + 1, board);
@@ -147,7 +108,6 @@ public class Pacman{
     }
 
     private void drawPacnanLeft(Graphics2D g2d) {
-
         switch (pacmanAnimPos) {
             case 1:
                 g2d.drawImage(pacman2left, pacman_x + 1, pacman_y + 1, board);
@@ -165,7 +125,6 @@ public class Pacman{
     }
 
     private void drawPacmanRight(Graphics2D g2d) {
-
         switch (pacmanAnimPos) {
             case 1:
                 g2d.drawImage(pacman2right, pacman_x + 1, pacman_y + 1, board);
