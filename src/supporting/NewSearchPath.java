@@ -1,6 +1,9 @@
 package supporting;
 
+import java.util.Queue;
+
 public interface NewSearchPath {
-    Couple getNextStep();
-    void addOrRemovePathPoint(Point point);
+    Node getNextNode();
+    Queue<Point> getPathToNextPoint(Node start, Node nodeTo);
+    void addNewPoints(Node nodeTo);
 }

@@ -1,23 +1,23 @@
-import supporting.Couple;
 import supporting.NewSearchPath;
+import supporting.Node;
 import supporting.Point;
 
 import javax.swing.*;
 import java.awt.*;
 import java.util.List;
+import java.util.Queue;
 
 public class Pacman {
     static final int PACMAN_ANIM_COUNT = 4;
     private static final int ANIMATION_STEPS = 5;
     Board board;
-    List<Integer> path;
     int animationCount = 0;
     int pacmanStep = 0;
     int additionAnimationX = 0;
     int additionAnimationY = 0;
     Point startPosition;
     NewSearchPath searchPath;
-    Couple pathCouple;
+    Node nowNode, oldNode;
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
@@ -27,6 +27,8 @@ public class Pacman {
 
     public Pacman(NewSearchPath searchPath, Point startPosition) {
         this.searchPath = searchPath;
+        nowNode = searchPath.getNextNode();
+        searchPath.addNewPoints(nowNode);
         this.startPosition = startPosition;
         init();
     }
@@ -55,14 +57,16 @@ public class Pacman {
         pacman3right = new ImageIcon("images/right2.png").getImage();
         pacman4right = new ImageIcon("images/right3.png").getImage();
     }
-
+    Queue<Point> path;
     void movePacman() {
-        while (!(pathCouple != null && !pathCouple.getStack().empty()))
-            pathCouple = searchPath.getNextStep();
-        Point goTo = pathCouple.getStack().pop();
-        System.out.println("x = " + goTo.x + ", y = " + goTo.y);
-        searchPath.addOrRemovePathPoint(new Point(pacman_x, pacman_y));
-        movePacmanTo(goTo.y, goTo.x);
+        while (path == null || path.isEmpty()) {
+            oldNode = nowNode;
+            nowNode = searchPath.getNextNode();
+            path = searchPath.getPathToNextPoint(oldNode, nowNode);
+            searchPath.addNewPoints(nowNode);
+        }
+        Point newPoint = path.poll();
+        movePacmanTo(newPoint.y, newPoint.x);
     }
 
     private void movePacmanTo(int j, int i) {

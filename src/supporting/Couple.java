@@ -1,12 +1,13 @@
 package supporting;
 
+import java.util.Queue;
 import java.util.Stack;
 
 public class Couple {
     private Point point;
-     private Stack<Point> stack;
+     private Queue<Point> stack;
 
-    Couple(Point point, Stack<Point> stack) {
+    Couple(Point point, Queue<Point> stack) {
         this.point = point;
         this.stack = stack;
     }
@@ -15,7 +16,7 @@ public class Couple {
         return point;
     }
 
-    public Stack<Point> getStack() {
+    public Queue<Point> getStack() {
         return stack;
     }
 }

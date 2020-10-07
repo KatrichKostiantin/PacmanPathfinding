@@ -1,7 +1,6 @@
-import supporting.DepthFirstPaths;
 import supporting.Graph;
-import supporting.NewBFS;
 import supporting.Point;
+import supporting.TreeBFS;
 
 import javax.swing.*;
 import java.awt.*;
@@ -35,7 +34,7 @@ public class PacmanGameVisual extends JFrame {
         levelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = new Point(0, 0);//searchEmptyPoint(levelData);
 
-        pacman = new Pacman(new NewBFS(mainGraph, randomStart, randomEnd), randomStart);
+        pacman = new Pacman(new TreeBFS(mainGraph, randomStart, randomEnd), randomStart);
 
         initUI();
     }
