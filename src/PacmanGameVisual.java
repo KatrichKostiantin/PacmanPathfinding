@@ -1,6 +1,7 @@
 import supporting.Graph;
 import supporting.Point;
 import supporting.TreeBFS;
+import supporting.TreeDFS;
 
 import javax.swing.*;
 import java.awt.*;
@@ -34,7 +35,7 @@ public class PacmanGameVisual extends JFrame {
         levelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = new Point(0, 0);//searchEmptyPoint(levelData);
 
-        pacman = new Pacman(new TreeBFS(mainGraph, randomStart, randomEnd), randomStart);
+        pacman = new Pacman(new TreeDFS(mainGraph, randomStart, randomEnd), randomStart);
 
         initUI();
     }
@@ -59,12 +60,12 @@ public class PacmanGameVisual extends JFrame {
 
     private Graph buildGraphOnMatrix(short[][] levelData) {
         Graph graph = new Graph(levelData.length * levelData[0].length);
-        for (int y = 0; y < levelData.length - 1; y++) {
-            for (int x = 0; x < levelData[y].length - 1; x++) {
+        for (int y = 0; y < levelData.length; y++) {
+            for (int x = 0; x < levelData[y].length; x++) {
                 if (levelData[y][x] == 0) {
-                    if (levelData[y][x + 1] == 0)
+                    if (x + 1 < levelData[y].length && levelData[y][x + 1] == 0 )
                         graph.addEdge(new Point(x, y), new Point(x + 1, y));
-                    if (levelData[y + 1][x] == 0)
+                    if (y + 1 < levelData.length && levelData[y + 1][x] == 0)
                         graph.addEdge(new Point(x, y), new Point(x, y + 1));
                 }
             }
