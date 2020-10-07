@@ -1,11 +1,15 @@
 import supporting.Graph;
 import supporting.Point;
+import supporting.TreeBFS;
+import supporting.TreeDFS;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Random;
 
 public class PacmanGameStatistic {
-    private static final int COUNT_ITERATION = 20;
+    private static final int COUNT_ITERATION = 1000;
     final short[][] levelData = {
             {0, 0, 0, 5, 0, 0, 0, 0, 15, 0, 0, 0, 0, 0, 0, 0},
             {0, 0, 0, 5, 0, 0, 0, 0, 0, 15, 0, 3, 10, 10, 6, 0},
@@ -56,43 +60,52 @@ public class PacmanGameStatistic {
     }
 
     private int iterationDFS(Graph mainGraph) {
-        /*Point randomEnd = searchEmptyPoint(levelData);
-        levelData[randomEnd.y][randomEnd.x] = 16;
-        Point randomStart = searchEmptyPoint(levelData);
+        Graph newGraph = new Graph(mainGraph);
+         short[][] newLevelData = copyLevelData(levelData);
+        Point randomEnd = searchEmptyPoint(newLevelData);
+        newLevelData[randomEnd.y][randomEnd.x] = 16;
+        Point randomStart = searchEmptyPoint(newLevelData);
 
-        pacman = new Pacman(new DepthFirstPaths(mainGraph, randomStart.y * levelData.length + randomStart.x, randomEnd.y * levelData.length + randomEnd.x),
-                randomStart);
-        Board board = new Board(levelData);
+        pacman = new Pacman(new TreeDFS(newGraph, randomStart, randomEnd),
+                randomStart, randomEnd);
+        Board board = new Board(newLevelData);
         pacman.setBoard(board);
-        return pacman.getCountOfStepsToFind();*/
-        return 0;
+        return pacman.getCountOfStepsToFind();
+    }
+
+    private short[][] copyLevelData(short[][] array) {
+        short[][] result = new short[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++)
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        return result;
     }
 
     private int iterationBFS(Graph mainGraph) {
-        /*Point randomEnd = searchEmptyPoint(levelData);
-        levelData[randomEnd.y][randomEnd.x] = 16;
-        Point randomStart = searchEmptyPoint(levelData);
+        Graph newGraph = new Graph(mainGraph);
+        short[][] newLevelData = copyLevelData(levelData);
+        Point randomEnd = searchEmptyPoint(newLevelData);
+        newLevelData[randomEnd.y][randomEnd.x] = 16;
+        Point randomStart = searchEmptyPoint(newLevelData);
 
-        pacman = new Pacman(new BreadthFirstPaths(mainGraph, randomStart.y * levelData.length + randomStart.x, randomEnd.y * levelData.length + randomEnd.x),
-                randomStart);
-        Board board = new Board(levelData);
+        pacman = new Pacman(new TreeBFS(newGraph, randomStart, randomEnd),
+                randomStart, randomEnd);
+        Board board = new Board(newLevelData);
         pacman.setBoard(board);
-        return pacman.getCountOfStepsToFind();*/
-        return 0;
+        return pacman.getCountOfStepsToFind();
     }
 
     private Graph buildGraphOnMatrix(short[][] levelData) {
         Graph graph = new Graph(levelData.length * levelData[0].length);
-       /* for (int y = 0; y < levelData.length - 1; y++) {
-            for (int x = 0; x < levelData[y].length - 1; x++) {
+        for (int y = 0; y < levelData.length; y++) {
+            for (int x = 0; x < levelData[y].length; x++) {
                 if (levelData[y][x] == 0) {
-                    if (levelData[y][x + 1] == 0)
-                        graph.addEdge((y) * levelData.length + x, (y) * levelData.length + x + 1);
-                    if (levelData[y + 1][x] == 0)
-                        graph.addEdge((y) * levelData.length + x, (y + 1) * levelData.length + x);
+                    if (x + 1 < levelData[y].length && levelData[y][x + 1] == 0 )
+                        graph.addEdge(new Point(x, y), new Point(x + 1, y));
+                    if (y + 1 < levelData.length && levelData[y + 1][x] == 0)
+                        graph.addEdge(new Point(x, y), new Point(x, y + 1));
                 }
             }
-        }*/
+        }
         return graph;
     }
 

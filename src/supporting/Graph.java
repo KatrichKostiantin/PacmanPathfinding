@@ -1,5 +1,6 @@
 package supporting;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -17,6 +18,12 @@ public class Graph {
     public Graph(int V) {
         this.V = V;
         adj = new HashMap<>(V);
+    }
+
+    public Graph(Graph graph){
+        V = graph.V;
+        adj = new HashMap<>(V);
+        adj.putAll(graph.adj);
     }
 
     /**

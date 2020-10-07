@@ -7,29 +7,32 @@ import java.awt.*;
 import java.util.Queue;
 
 public class Pacman {
-    static final int PACMAN_ANIM_COUNT = 4;
+    static final int PACMAN_ANIM_IMAGE = 4;
     private static final int ANIMATION_STEPS = 5;
-    Board board;
+    private static Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
+    private static Image pacman3up, pacman3down, pacman3left, pacman3right;
+    private static Image pacman4up, pacman4down, pacman4left, pacman4right;
+
     int animationCount = 0;
-    int pacmanStep = 0;
-    int additionAnimationX = 0;
-    int additionAnimationY = 0;
-    Point startPosition;
+    int pacmanSteps = 0;
+    int additionAnimationY = 0, additionAnimationX = 0;
+    Point startPosition, finishPosition;
     SearchPath searchPath;
     Node nowNode, oldNode;
-    private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
-    private Image pacman3up, pacman3down, pacman3left, pacman3right;
-    private Image pacman4up, pacman4down, pacman4left, pacman4right;
     private int pacman_x, pacman_y;
     private int directionPacmanX, directionPacmanY;
     private int pacmanAnimPos = 0;
+    private Queue<Point> path;
+    Board board;
 
-    public Pacman(SearchPath searchPath, Point startPosition) {
+    public Pacman(SearchPath searchPath, Point startPosition, Point finishPosition) {
         this.searchPath = searchPath;
         nowNode = searchPath.getNextNode();
         searchPath.addNewPoints(nowNode);
         this.startPosition = startPosition;
+        this.finishPosition = finishPosition;
         init();
+        initPacmanImages();
     }
 
     void setBoard(Board board) {
@@ -37,7 +40,6 @@ public class Pacman {
     }
 
     void init() {
-        initPacmanImages();
         movePacmanTo(startPosition.y, startPosition.x);
     }
 
@@ -57,14 +59,14 @@ public class Pacman {
         pacman4right = new ImageIcon("images/right3.png").getImage();
     }
 
-    Queue<Point> path;
 
-    void movePacman() {
+
+    void animationMovePacman() {
         while (path == null || path.isEmpty()) {
             oldNode = nowNode;
             nowNode = searchPath.getNextNode();
             path = searchPath.getPathToNextPoint(oldNode, nowNode);
-            if(path == null)
+            if (path == null)
                 board.stop();
             searchPath.addNewPoints(nowNode);
         }
@@ -84,7 +86,7 @@ public class Pacman {
         additionAnimationX = -1 * directionPacmanX * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
         additionAnimationY = -1 * directionPacmanY * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
         pacmanAnimPos++;
-        pacmanAnimPos %= PACMAN_ANIM_COUNT;
+        pacmanAnimPos %= PACMAN_ANIM_IMAGE;
         if (directionPacmanX == -1) {
             drawPacmanEatingLeft(g2d, pacman_x * Board.BLOCK_SIZE + additionAnimationX, pacman_y * Board.BLOCK_SIZE + additionAnimationY);
         } else if (directionPacmanX == 1) {
@@ -168,11 +170,15 @@ public class Pacman {
         drawPacmanEating(g2d);
         animationCount %= ANIMATION_STEPS;
         if (animationCount++ == 0) {
-            movePacman();
+            animationMovePacman();
         }
     }
 
     public int getCountOfStepsToFind() {
-        return 0;
+        while (!nowNode.getValue().equals(finishPosition)) {
+            nowNode = searchPath.getNextNode();
+            searchPath.addNewPoints(nowNode);
+        }
+        return searchPath.getSteps();
     }
 }

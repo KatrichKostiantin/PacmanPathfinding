@@ -6,17 +6,22 @@ public class TreeDFS implements SearchPath {
     Stack<Node> stack;
     private List<Point> marked;
     private Graph graph;
-    private Point start, finish;
-    Node root;
+    private Point finish;
+    private Node root;
+    private int steps = 0;
 
     public TreeDFS(Graph graph, Point start, Point finish) {
         this.graph = graph;
-        this.start = start;
         this.finish = finish;
         root = new Node(null, start);
         marked = new ArrayList<>();
         stack = new Stack<>();
         stack.push(root);
+    }
+
+    @Override
+    public int getSteps() {
+        return steps;
     }
 
     @Override
@@ -51,6 +56,7 @@ public class TreeDFS implements SearchPath {
     public void addNewPoints(Node nodeTo) {
         if (nodeTo == null || nodeTo.value.equals(finish))
             return;
+        steps++;
         for (Point point : graph.adj(nodeTo.value)) {
             if (!marked.contains(point)) {
                 marked.add(point);

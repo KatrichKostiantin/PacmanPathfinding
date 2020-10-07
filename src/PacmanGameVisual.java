@@ -35,7 +35,7 @@ public class PacmanGameVisual extends JFrame {
         levelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = new Point(0, 0);//searchEmptyPoint(levelData);
 
-        pacman = new Pacman(new TreeDFS(mainGraph, randomStart, randomEnd), randomStart);
+        pacman = new Pacman(new TreeDFS(mainGraph, randomStart, randomEnd), randomStart, randomEnd);
 
         initUI();
     }
