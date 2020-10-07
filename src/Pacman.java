@@ -1,6 +1,6 @@
-import supporting.SearchPath;
 import supporting.Node;
 import supporting.Point;
+import supporting.SearchPath;
 
 import javax.swing.*;
 import java.awt.*;
@@ -56,12 +56,16 @@ public class Pacman {
         pacman3right = new ImageIcon("images/right2.png").getImage();
         pacman4right = new ImageIcon("images/right3.png").getImage();
     }
+
     Queue<Point> path;
+
     void movePacman() {
         while (path == null || path.isEmpty()) {
             oldNode = nowNode;
             nowNode = searchPath.getNextNode();
             path = searchPath.getPathToNextPoint(oldNode, nowNode);
+            if(path == null)
+                board.stop();
             searchPath.addNewPoints(nowNode);
         }
         Point newPoint = path.poll();
@@ -163,8 +167,9 @@ public class Pacman {
     public void step(Graphics2D g2d) {
         drawPacmanEating(g2d);
         animationCount %= ANIMATION_STEPS;
-        if (animationCount++ == 0)
+        if (animationCount++ == 0) {
             movePacman();
+        }
     }
 
     public int getCountOfStepsToFind() {

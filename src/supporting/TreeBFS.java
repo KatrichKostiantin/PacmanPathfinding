@@ -26,6 +26,8 @@ public class TreeBFS implements SearchPath {
 
     @Override
     public Queue<Point> getPathToNextPoint(Node start, Node nodeTo) {
+        if(start.value.equals(finish))
+            return null;
         Queue<Point> resultStart = new LinkedList<>();
         Queue<Point> resultFinish = new LinkedList<>();
         Node tempStart = new Node(start);

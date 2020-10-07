@@ -49,7 +49,6 @@ public class Board extends JPanel implements ActionListener {
 
 
     private void drawMaze(Graphics2D g2d) {
-
         g2d.setStroke(new BasicStroke(2));
         g2d.setColor(mazeColor);
         g2d.drawRect(0, 0, screenData[0].length*BLOCK_SIZE, screenData.length * BLOCK_SIZE);
@@ -104,11 +103,7 @@ public class Board extends JPanel implements ActionListener {
 
 
     public void stop() {
-        if (timer.isRunning()) {
             timer.stop();
-        } else {
-            timer.start();
-        }
     }
 
     @Override
