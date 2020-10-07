@@ -1,18 +1,21 @@
 package supporting;
 
+import java.util.Stack;
+
 public class Couple {
-    int e, v;
+    private Point point;
+     private Stack<Point> stack;
 
-    Couple(int e, int v) {
-        this.e = e;
-        this.v = v;
+    Couple(Point point, Stack<Point> stack) {
+        this.point = point;
+        this.stack = stack;
     }
 
-    int e() {
-        return e;
+    public Point getPoint() {
+        return point;
     }
 
-    int v() {
-        return v;
+    public Stack<Point> getStack() {
+        return stack;
     }
 }

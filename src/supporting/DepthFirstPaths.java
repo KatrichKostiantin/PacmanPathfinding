@@ -29,7 +29,7 @@ public class DepthFirstPaths implements SearchPath {
      * @param v - dfs з вершини v
      */
     private void dfs(Graph G, int v) {
-        marked[v] = true;
+        /*marked[v] = true;
         for (int w : G.adj(v)) {
             if (!marked[w]) {
                 edgeTo[w] = v;
@@ -40,7 +40,7 @@ public class DepthFirstPaths implements SearchPath {
 
                 dfs(G, w);
             }
-        }
+        }*/
     }
 
 

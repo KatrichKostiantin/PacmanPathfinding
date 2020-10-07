@@ -20,32 +20,31 @@ public class BreadthFirstPaths implements SearchPath {
         this.startPosition = startPosition;
         this.endPosition = endPosition;
         deque = new ArrayDeque<>();
-        coords = G.COORDS();
         distTo = new int[graph.V()];
         edgeTo = new int[graph.V()];
         marked = new boolean[graph.V()];
-        bfs();
+        //bfs();
     }
 
-    private void bfs() {
+    /*private void bfs() {
         deque.add(new Couple(0, startPosition));
         marked[startPosition] = true;
         distTo[startPosition] = 0;
         while (!deque.isEmpty()) {
             Couple point = deque.poll();
-            for (int w : graph.adj(point.v)) {
+            for (int w : graph.adj(point.stack)) {
                 if (!marked[w]) {
-                    deque.add(new Couple(point.v, w));
+                    deque.add(new Couple(point.stack, w));
                     marked[w] = true;
-                    edgeTo[w] = point.v;
-                    distTo[w] = distTo[point.v] + 1;
+                    edgeTo[w] = point.stack;
+                    distTo[w] = distTo[point.stack] + 1;
                     countOfSteps++;
                     if(w == endPosition)
                         stepsToFinish = countOfSteps;
                 }
             }
         }
-    }
+    }*/
 
     public int getStepsToFinish() {
         return stepsToFinish;

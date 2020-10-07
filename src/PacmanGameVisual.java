@@ -1,5 +1,6 @@
 import supporting.DepthFirstPaths;
 import supporting.Graph;
+import supporting.NewBFS;
 import supporting.Point;
 
 import javax.swing.*;
@@ -32,10 +33,9 @@ public class PacmanGameVisual extends JFrame {
         Graph mainGraph = buildGraphOnMatrix(levelData);
         Point randomEnd = searchEmptyPoint(levelData);
         levelData[randomEnd.y][randomEnd.x] = 16;
-        Point randomStart = searchEmptyPoint(levelData);
+        Point randomStart = new Point(0, 0);//searchEmptyPoint(levelData);
 
-        pacman = new Pacman(new DepthFirstPaths(mainGraph, randomStart.y * levelData.length + randomStart.x, randomEnd.y * levelData.length + randomEnd.x),
-                randomStart);
+        pacman = new Pacman(new NewBFS(mainGraph, randomStart, randomEnd), randomStart);
 
         initUI();
     }
@@ -64,9 +64,9 @@ public class PacmanGameVisual extends JFrame {
             for (int x = 0; x < levelData[y].length - 1; x++) {
                 if (levelData[y][x] == 0) {
                     if (levelData[y][x + 1] == 0)
-                        graph.addEdge((y) * levelData.length + x, (y) * levelData.length + x + 1);
+                        graph.addEdge(new Point(x, y), new Point(x + 1, y));
                     if (levelData[y + 1][x] == 0)
-                        graph.addEdge((y) * levelData.length + x, (y + 1) * levelData.length + x);
+                        graph.addEdge(new Point(x, y), new Point(x, y + 1));
                 }
             }
         }

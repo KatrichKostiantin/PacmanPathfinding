@@ -1,5 +1,6 @@
+import supporting.Couple;
+import supporting.NewSearchPath;
 import supporting.Point;
-import supporting.SearchPath;
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,7 +16,8 @@ public class Pacman {
     int additionAnimationX = 0;
     int additionAnimationY = 0;
     Point startPosition;
-    SearchPath searchPath;
+    NewSearchPath searchPath;
+    Couple pathCouple;
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
     private Image pacman4up, pacman4down, pacman4left, pacman4right;
@@ -23,14 +25,9 @@ public class Pacman {
     private int directionPacmanX, directionPacmanY;
     private int pacmanAnimPos = 0;
 
-    public Pacman(SearchPath searchPath, Point startPosition) {
+    public Pacman(NewSearchPath searchPath, Point startPosition) {
         this.searchPath = searchPath;
         this.startPosition = startPosition;
-        path = searchPath.pathToFinish();
-        if (path == null) {
-            System.out.println("ERROR");
-            return;
-        }
         init();
     }
 
@@ -60,12 +57,12 @@ public class Pacman {
     }
 
     void movePacman() {
-        int point;
-        if (pacmanStep < path.size()) {
-            point = path.get(pacmanStep++);
-            movePacmanTo(point / 16, point % 16);
-        } else
-            board.stop();
+        while (!(pathCouple != null && !pathCouple.getStack().empty()))
+            pathCouple = searchPath.getNextStep();
+        Point goTo = pathCouple.getStack().pop();
+        System.out.println("x = " + goTo.x + ", y = " + goTo.y);
+        searchPath.addOrRemovePathPoint(new Point(pacman_x, pacman_y));
+        movePacmanTo(goTo.y, goTo.x);
     }
 
     private void movePacmanTo(int j, int i) {
@@ -77,8 +74,8 @@ public class Pacman {
     }
 
     public void drawPacmanEating(Graphics2D g2d) {
-        additionAnimationX = -1 * directionPacmanX * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
-        additionAnimationY = -1 * directionPacmanY * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
+        //additionAnimationX = -1 * directionPacmanX * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
+        //additionAnimationY = -1 * directionPacmanY * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
         pacmanAnimPos++;
         pacmanAnimPos %= PACMAN_ANIM_COUNT;
         if (directionPacmanX == -1) {
@@ -168,6 +165,6 @@ public class Pacman {
     }
 
     public int getCountOfStepsToFind() {
-        return searchPath.getStepsToFinish();
+        return 0;
     }
 }

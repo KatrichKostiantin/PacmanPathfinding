@@ -55,11 +55,10 @@ public class PacmanGameStatistic {
         System.out.println("RESULT OF " + COUNT_ITERATION + " ITERATION:\n" +
                 "DFS: Time - " + timeDFS + ", steps - " + stepsDFS + "\n" +
                 "BFS: Time - " + timeBFS + ", steps - " + stepsBFS);
-
     }
 
     private int iterationDFS(Graph mainGraph) {
-        Point randomEnd = searchEmptyPoint(levelData);
+        /*Point randomEnd = searchEmptyPoint(levelData);
         levelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = searchEmptyPoint(levelData);
 
@@ -67,11 +66,12 @@ public class PacmanGameStatistic {
                 randomStart);
         Board board = new Board(levelData);
         pacman.setBoard(board);
-        return pacman.getCountOfStepsToFind();
+        return pacman.getCountOfStepsToFind();*/
+        return 0;
     }
 
     private int iterationBFS(Graph mainGraph) {
-        Point randomEnd = searchEmptyPoint(levelData);
+        /*Point randomEnd = searchEmptyPoint(levelData);
         levelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = searchEmptyPoint(levelData);
 
@@ -79,12 +79,13 @@ public class PacmanGameStatistic {
                 randomStart);
         Board board = new Board(levelData);
         pacman.setBoard(board);
-        return pacman.getCountOfStepsToFind();
+        return pacman.getCountOfStepsToFind();*/
+        return 0;
     }
 
     private Graph buildGraphOnMatrix(short[][] levelData) {
         Graph graph = new Graph(levelData.length * levelData[0].length);
-        for (int y = 0; y < levelData.length - 1; y++) {
+       /* for (int y = 0; y < levelData.length - 1; y++) {
             for (int x = 0; x < levelData[y].length - 1; x++) {
                 if (levelData[y][x] == 0) {
                     if (levelData[y][x + 1] == 0)
@@ -93,7 +94,7 @@ public class PacmanGameStatistic {
                         graph.addEdge((y) * levelData.length + x, (y + 1) * levelData.length + x);
                 }
             }
-        }
+        }*/
         return graph;
     }
 
