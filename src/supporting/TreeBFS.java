@@ -2,7 +2,7 @@ package supporting;
 
 import java.util.*;
 
-public class TreeBFS implements NewSearchPath {
+public class TreeBFS implements SearchPath {
     ArrayDeque<Node> deque;
     private List<Point> marked;
     private Graph graph;

@@ -1,8 +1,9 @@
 package supporting;
 
-import java.util.List;
+import java.util.Queue;
 
 public interface SearchPath {
-    List<Integer> pathToFinish();
-    int getStepsToFinish();
+    Node getNextNode();
+    Queue<Point> getPathToNextPoint(Node start, Node nodeTo);
+    void addNewPoints(Node nodeTo);
 }

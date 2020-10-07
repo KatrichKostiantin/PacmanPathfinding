@@ -1,10 +1,9 @@
-import supporting.NewSearchPath;
+import supporting.SearchPath;
 import supporting.Node;
 import supporting.Point;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.List;
 import java.util.Queue;
 
 public class Pacman {
@@ -16,7 +15,7 @@ public class Pacman {
     int additionAnimationX = 0;
     int additionAnimationY = 0;
     Point startPosition;
-    NewSearchPath searchPath;
+    SearchPath searchPath;
     Node nowNode, oldNode;
     private Image pacman1, pacman2up, pacman2left, pacman2right, pacman2down;
     private Image pacman3up, pacman3down, pacman3left, pacman3right;
@@ -25,7 +24,7 @@ public class Pacman {
     private int directionPacmanX, directionPacmanY;
     private int pacmanAnimPos = 0;
 
-    public Pacman(NewSearchPath searchPath, Point startPosition) {
+    public Pacman(SearchPath searchPath, Point startPosition) {
         this.searchPath = searchPath;
         nowNode = searchPath.getNextNode();
         searchPath.addNewPoints(nowNode);
@@ -78,8 +77,8 @@ public class Pacman {
     }
 
     public void drawPacmanEating(Graphics2D g2d) {
-        //additionAnimationX = -1 * directionPacmanX * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
-        //additionAnimationY = -1 * directionPacmanY * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
+        additionAnimationX = -1 * directionPacmanX * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
+        additionAnimationY = -1 * directionPacmanY * (ANIMATION_STEPS - animationCount) * (Board.BLOCK_SIZE / ANIMATION_STEPS);
         pacmanAnimPos++;
         pacmanAnimPos %= PACMAN_ANIM_COUNT;
         if (directionPacmanX == -1) {
