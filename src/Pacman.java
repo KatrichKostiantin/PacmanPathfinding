@@ -1,10 +1,8 @@
-import supporting.Node;
 import supporting.Point;
 import supporting.SearchPath;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.Queue;
 
 public class Pacman {
     static final int PACMAN_ANIM_IMAGE = 4;
@@ -18,17 +16,13 @@ public class Pacman {
     int additionAnimationY = 0, additionAnimationX = 0;
     Point startPosition, finishPosition;
     SearchPath searchPath;
-    Node nowNode, oldNode;
+    Board board;
     private int pacman_x, pacman_y;
     private int directionPacmanX, directionPacmanY;
     private int pacmanAnimPos = 0;
-    private Queue<Point> path;
-    Board board;
 
     public Pacman(SearchPath searchPath, Point startPosition, Point finishPosition) {
         this.searchPath = searchPath;
-        nowNode = searchPath.getNextNode();
-        searchPath.addNewPoints(nowNode);
         this.startPosition = startPosition;
         this.finishPosition = finishPosition;
         init();
@@ -59,19 +53,12 @@ public class Pacman {
         pacman4right = new ImageIcon("images/right3.png").getImage();
     }
 
-
-
     void animationMovePacman() {
-        while (path == null || path.isEmpty()) {
-            oldNode = nowNode;
-            nowNode = searchPath.getNextNode();
-            path = searchPath.getPathToNextPoint(oldNode, nowNode);
-            if (path == null)
-                board.stop();
-            searchPath.addNewPoints(nowNode);
-        }
-        Point newPoint = path.poll();
-        movePacmanTo(newPoint.y, newPoint.x);
+        Point point = searchPath.getNextVisualPoint();
+        if (point == null)
+            board.stop();
+        else
+            movePacmanTo(point.y, point.x);
     }
 
     private void movePacmanTo(int j, int i) {
@@ -175,10 +162,6 @@ public class Pacman {
     }
 
     public int getCountOfStepsToFind() {
-        while (!nowNode.getValue().equals(finishPosition)) {
-            nowNode = searchPath.getNextNode();
-            searchPath.addNewPoints(nowNode);
-        }
-        return searchPath.getSteps();
+        return searchPath.getCountOfStepsToFind();
     }
 }

@@ -4,15 +4,13 @@ import java.util.*;
 
 public class TreeBFS implements SearchPath {
     ArrayDeque<Node> deque;
+    Node nowNode, oldNode;
     private List<Point> marked;
     private Graph graph;
     private Point finish;
-    private int steps;
+    private int steps = 0;
     private Node root;
-
-    public Point getFinish() {
-        return finish;
-    }
+    private Queue<Point> path;
 
     public TreeBFS(Graph graph, Point start, Point finish) {
         this.graph = graph;
@@ -21,21 +19,29 @@ public class TreeBFS implements SearchPath {
         marked = new ArrayList<>();
         deque = new ArrayDeque<>();
         deque.push(root);
+        nowNode = getNextNode();
+        addNewPoints(nowNode);
+    }
+
+    public Point getFinish() {
+        return finish;
     }
 
     @Override
-    public int getSteps() {
+    public int getCountOfStepsToFind() {
+        while (!nowNode.value.equals(finish)) {
+            nowNode = getNextNode();
+            addNewPoints(nowNode);
+        }
         return steps;
     }
 
-    @Override
     public Node getNextNode() {
         return deque.poll();
     }
 
-    @Override
     public Queue<Point> getPathToNextPoint(Node start, Node nodeTo) {
-        if(start.value.equals(finish))
+        if (start.value.equals(finish))
             return null;
         Queue<Point> resultStart = new LinkedList<>();
         Queue<Point> resultFinish = new LinkedList<>();
@@ -56,7 +62,6 @@ public class TreeBFS implements SearchPath {
         return resultStart;
     }
 
-    @Override
     public void addNewPoints(Node nodeTo) {
         if (nodeTo == null || nodeTo.value.equals(finish))
             return;
@@ -69,5 +74,18 @@ public class TreeBFS implements SearchPath {
                 nodeTo.addChildren(newNode);
             }
         }
+    }
+
+    @Override
+    public Point getNextVisualPoint() {
+        if (path == null || path.isEmpty()) {
+            oldNode = nowNode;
+            nowNode = getNextNode();
+            path = getPathToNextPoint(oldNode, nowNode);
+            addNewPoints(nowNode);
+            if(oldNode.value.equals(finish))
+                return null;
+        }
+        return path.poll();
     }
 }

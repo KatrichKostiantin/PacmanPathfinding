@@ -4,11 +4,13 @@ import java.util.*;
 
 public class TreeDFS implements SearchPath {
     Stack<Node> stack;
+    Node nowNode, oldNode;
     private List<Point> marked;
     private Graph graph;
     private Point finish;
-    private Node root;
     private int steps = 0;
+    private Node root;
+    private Queue<Point> path;
 
     public TreeDFS(Graph graph, Point start, Point finish) {
         this.graph = graph;
@@ -17,19 +19,27 @@ public class TreeDFS implements SearchPath {
         marked = new ArrayList<>();
         stack = new Stack<>();
         stack.push(root);
+        nowNode = getNextNode();
+        addNewPoints(nowNode);
+    }
+
+    public Point getFinish() {
+        return finish;
     }
 
     @Override
-    public int getSteps() {
+    public int getCountOfStepsToFind() {
+        while (!nowNode.value.equals(finish)) {
+            nowNode = getNextNode();
+            addNewPoints(nowNode);
+        }
         return steps;
     }
 
-    @Override
     public Node getNextNode() {
         return stack.pop();
     }
 
-    @Override
     public Queue<Point> getPathToNextPoint(Node start, Node nodeTo) {
         if (start.value.equals(finish))
             return null;
@@ -52,7 +62,6 @@ public class TreeDFS implements SearchPath {
         return resultStart;
     }
 
-    @Override
     public void addNewPoints(Node nodeTo) {
         if (nodeTo == null || nodeTo.value.equals(finish))
             return;
@@ -66,5 +75,17 @@ public class TreeDFS implements SearchPath {
             }
         }
     }
-}
 
+    @Override
+    public Point getNextVisualPoint() {
+        if (path == null || path.isEmpty()) {
+            oldNode = nowNode;
+            nowNode = getNextNode();
+            path = getPathToNextPoint(oldNode, nowNode);
+            addNewPoints(nowNode);
+            if(oldNode.value.equals(finish))
+                return null;
+        }
+        return path.poll();
+    }
+}
