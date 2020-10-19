@@ -5,26 +5,28 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-public class Node implements Comparable<Node>{
+public class NodeWeigh implements Comparable<NodeWeigh>{
     static int freeId = 0;
     private int id;
-    List<Node> children;
-    Node father;
-    Point value;
+    private List<NodeWeigh> children;
+    private int weigh;
+    private NodeWeigh father;
+    private Point value;
 
-    public Node(Node father, Point value) {
+    public NodeWeigh(NodeWeigh father, Point value, int weigh) {
         this.children = new ArrayList<>();
         this.father = father;
         this.value = value;
+        this.weigh = weigh;
         id = freeId++;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof Node)) return false;
-        Node node = (Node) o;
-        return id == node.id;
+        if (!(o instanceof NodeWeigh)) return false;
+        NodeWeigh node = (NodeWeigh) o;
+        return id == node.getId();
     }
 
     @Override
@@ -32,18 +34,23 @@ public class Node implements Comparable<Node>{
         return Objects.hash(id);
     }
 
-    public Node(Node node) {
+    public NodeWeigh(NodeWeigh node) {
         this.children = node.getChildren();
         this.father = node.getFather();
         this.value = node.getValue();
+        this.weigh = node.getWeigh();
         this.id = node.getId();
     }
 
-    public List<Node> getChildren() {
+    public int getWeigh() {
+        return weigh;
+    }
+
+    public List<NodeWeigh> getChildren() {
         return children;
     }
 
-    public void addChildren(Node newChildren) {
+    public void addChildren(NodeWeigh newChildren) {
         children.add(newChildren);
     }
 
@@ -51,7 +58,7 @@ public class Node implements Comparable<Node>{
         return id;
     }
 
-    public Node getFather() {
+    public NodeWeigh getFather() {
         return father;
     }
 
@@ -63,8 +70,10 @@ public class Node implements Comparable<Node>{
         this.value = value;
     }
 
+    public int compareToId(NodeWeigh that) {return Integer.compare(this.getId(), that.getId());}
+
     @Override
-    public int compareTo(Node that) {
-        return Integer.compare(this.id, that.id);
+    public int compareTo(NodeWeigh that) {
+        return Integer.compare(this.getWeigh(), that.weigh);
     }
 }

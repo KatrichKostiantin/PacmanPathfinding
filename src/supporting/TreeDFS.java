@@ -17,6 +17,7 @@ public class TreeDFS implements SearchPath {
         this.finish = finish;
         root = new Node(null, start);
         marked = new ArrayList<>();
+        marked.add(start);
         stack = new Stack<>();
         stack.push(root);
         nowNode = getNextNode();

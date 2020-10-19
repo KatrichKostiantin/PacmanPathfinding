@@ -38,7 +38,7 @@ public class Board extends JPanel implements ActionListener {
         mazeColor = new Color(5, 100, 5);
         d = new Dimension(400, 400);
 
-        timer = new Timer(30, this);
+        timer = new Timer(10, this);
         timer.start();
     }
 

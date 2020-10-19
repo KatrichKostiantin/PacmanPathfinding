@@ -17,6 +17,7 @@ public class TreeBFS implements SearchPath {
         this.finish = finish;
         root = new Node(null, start);
         marked = new ArrayList<>();
+        marked.add(start);
         deque = new ArrayDeque<>();
         deque.push(root);
         nowNode = getNextNode();
