@@ -1,7 +1,4 @@
-import supporting.Graph;
-import supporting.Point;
-import supporting.TreeBFS;
-import supporting.TreeDFS;
+import supporting.*;
 
 import java.time.Instant;
 import java.util.Random;
@@ -28,6 +25,8 @@ public class PacmanGameStatistic {
     };
     Pacman pacman;
     Random random = new Random();
+    long searchStepsDFS = 0, searchStepsBFS = 0, searchStepsAStar = 0;
+    long stepsDFS = 0, stepsBFS = 0, stepsAStar = 0;
 
     public static void main(String[] args) {
         PacmanGameStatistic pacmanGameStatistic = new PacmanGameStatistic();
@@ -36,30 +35,43 @@ public class PacmanGameStatistic {
 
     private void start() {
         Graph mainGraph = buildGraphOnMatrix(levelData);
-        long timeDFS, timeBFS, stepsDFS = 0, stepsBFS = 0;
+        long timeDFS, timeBFS, timeAStar;
 
         long timeStart = Instant.now().toEpochMilli();
         for (int i = 0; i < COUNT_ITERATION; i++) {
-            stepsDFS += iterationDFS(mainGraph);
+            iterationDFS(mainGraph);
         }
         timeDFS = Instant.now().toEpochMilli() - timeStart;
+        searchStepsDFS /= COUNT_ITERATION;
         stepsDFS /= COUNT_ITERATION;
 
         timeStart = Instant.now().toEpochMilli();
         for (int i = 0; i < COUNT_ITERATION; i++) {
-            stepsBFS += iterationBFS(mainGraph);
+            iterationBFS(mainGraph);
         }
         timeBFS = Instant.now().toEpochMilli() - timeStart;
+        searchStepsBFS /= COUNT_ITERATION;
         stepsBFS /= COUNT_ITERATION;
 
+        timeStart = Instant.now().toEpochMilli();
+        for (int i = 0; i < COUNT_ITERATION; i++) {
+            iterationAStar(mainGraph);
+        }
+        timeAStar = Instant.now().toEpochMilli() - timeStart;
+        searchStepsAStar /= COUNT_ITERATION;
+        stepsAStar /= COUNT_ITERATION;
+
+
         System.out.println("RESULT OF " + COUNT_ITERATION + " ITERATION:\n" +
-                "DFS: Time - " + timeDFS + ", steps - " + stepsDFS + "\n" +
-                "BFS: Time - " + timeBFS + ", steps - " + stepsBFS);
+                "DFS: Time - " + timeDFS + ", search steps - " + searchStepsDFS + ", steps - " + stepsDFS + "\n" +
+                "BFS: Time - " + timeBFS + ", search steps - " + searchStepsBFS + ", steps - " + stepsBFS + "\n" +
+                "AStar: Time - " + timeAStar + ", search steps - " + searchStepsAStar + ", steps - " + stepsAStar + "\n"
+        );
     }
 
-    private int iterationDFS(Graph mainGraph) {
+    private void iterationDFS(Graph mainGraph) {
         Graph newGraph = new Graph(mainGraph);
-         short[][] newLevelData = copyLevelData(levelData);
+        short[][] newLevelData = copyLevelData(levelData);
         Point randomEnd = searchEmptyPoint(newLevelData);
         newLevelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = searchEmptyPoint(newLevelData);
@@ -68,17 +80,11 @@ public class PacmanGameStatistic {
                 randomStart, randomEnd);
         Board board = new Board(newLevelData);
         pacman.setBoard(board);
-        return pacman.getCountOfStepsToFind();
+        searchStepsDFS += pacman.getCountOfStepsToFind();
+        stepsDFS += pacman.getSteps();
     }
 
-    private short[][] copyLevelData(short[][] array) {
-        short[][] result = new short[array.length][array[0].length];
-        for (int i = 0; i < array.length; i++)
-            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
-        return result;
-    }
-
-    private int iterationBFS(Graph mainGraph) {
+    private void iterationBFS(Graph mainGraph) {
         Graph newGraph = new Graph(mainGraph);
         short[][] newLevelData = copyLevelData(levelData);
         Point randomEnd = searchEmptyPoint(newLevelData);
@@ -89,7 +95,23 @@ public class PacmanGameStatistic {
                 randomStart, randomEnd);
         Board board = new Board(newLevelData);
         pacman.setBoard(board);
-        return pacman.getCountOfStepsToFind();
+        searchStepsBFS += pacman.getCountOfStepsToFind();
+        stepsBFS += pacman.getSteps();
+    }
+
+    private void iterationAStar(Graph mainGraph) {
+        Graph newGraph = new Graph(mainGraph);
+        short[][] newLevelData = copyLevelData(levelData);
+        Point randomEnd = searchEmptyPoint(newLevelData);
+        newLevelData[randomEnd.y][randomEnd.x] = 16;
+        Point randomStart = searchEmptyPoint(newLevelData);
+
+        pacman = new Pacman(new AStar(newGraph, randomStart, randomEnd),
+                randomStart, randomEnd);
+        Board board = new Board(newLevelData);
+        pacman.setBoard(board);
+        searchStepsAStar += pacman.getCountOfStepsToFind();
+        stepsAStar += pacman.getSteps();
     }
 
     private Graph buildGraphOnMatrix(short[][] levelData) {
@@ -97,7 +119,7 @@ public class PacmanGameStatistic {
         for (int y = 0; y < levelData.length; y++) {
             for (int x = 0; x < levelData[y].length; x++) {
                 if (levelData[y][x] == 0) {
-                    if (x + 1 < levelData[y].length && levelData[y][x + 1] == 0 )
+                    if (x + 1 < levelData[y].length && levelData[y][x + 1] == 0)
                         graph.addEdge(new Point(x, y), new Point(x + 1, y));
                     if (y + 1 < levelData.length && levelData[y + 1][x] == 0)
                         graph.addEdge(new Point(x, y), new Point(x, y + 1));
@@ -105,6 +127,13 @@ public class PacmanGameStatistic {
             }
         }
         return graph;
+    }
+
+    private short[][] copyLevelData(short[][] array) {
+        short[][] result = new short[array.length][array[0].length];
+        for (int i = 0; i < array.length; i++)
+            System.arraycopy(array[i], 0, result[i], 0, array[i].length);
+        return result;
     }
 
     private Point searchEmptyPoint(short[][] levelData) {

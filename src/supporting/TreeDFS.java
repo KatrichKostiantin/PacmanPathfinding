@@ -29,7 +29,7 @@ public class TreeDFS implements SearchPath {
     }
 
     @Override
-    public int getCountOfStepsToFind() {
+    public int getCountStepsToFind() {
         while (!nowNode.value.equals(finish)) {
             nowNode = getNextNode();
             addNewPoints(nowNode);
@@ -38,6 +38,7 @@ public class TreeDFS implements SearchPath {
     }
 
     public Node getNextNode() {
+        steps++;
         return stack.pop();
     }
 
@@ -66,7 +67,6 @@ public class TreeDFS implements SearchPath {
     public void addNewPoints(Node nodeTo) {
         if (nodeTo == null || nodeTo.value.equals(finish))
             return;
-        steps++;
         for (Point point : graph.adj(nodeTo.value)) {
             if (!marked.contains(point)) {
                 marked.add(point);
@@ -75,6 +75,17 @@ public class TreeDFS implements SearchPath {
                 nodeTo.addChildren(newNode);
             }
         }
+    }
+
+    @Override
+    public int getCountStepsFromStartToFinish() {
+        int res = 0;
+        Node tempNode = new Node(nowNode);
+        while (!tempNode.equals(root)){
+            res++;
+            tempNode = tempNode.getFather();
+        }
+        return res;
     }
 
     @Override

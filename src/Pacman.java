@@ -162,6 +162,10 @@ public class Pacman {
     }
 
     public int getCountOfStepsToFind() {
-        return searchPath.getCountOfStepsToFind();
+        return searchPath.getCountStepsToFind();
+    }
+
+    public long getSteps() {
+        return searchPath.getCountStepsFromStartToFinish();
     }
 }

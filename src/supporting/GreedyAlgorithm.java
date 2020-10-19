@@ -73,7 +73,12 @@ public class GreedyAlgorithm implements SearchPath{
 	}
 
 	@Override
-	public int getCountOfStepsToFind() {
+	public int getCountStepsToFind() {
 		return result.size();
+	}
+
+	@Override
+	public int getCountStepsFromStartToFinish() {
+		return 0;
 	}
 }

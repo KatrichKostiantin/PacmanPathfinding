@@ -25,13 +25,13 @@ public class AStar implements SearchPath {
     }
 
     public NodeWeigh getNextNode() {
+        steps++;
         return mainQueue.poll();
     }
 
     public void addNewPoints(NodeWeigh nodeTo) {
         if (nodeTo == null || nodeTo.getValue().equals(finish))
             return;
-        steps++;
         for (Point point : graph.adj(nodeTo.getValue())) {
             if (!marked.contains(point)) {
                 marked.add(point);
@@ -82,7 +82,22 @@ public class AStar implements SearchPath {
     }
 
     @Override
-    public int getCountOfStepsToFind() {
-        return 0;
+    public int getCountStepsToFind() {
+        while (!nowNode.getValue().equals(finish)) {
+            nowNode = getNextNode();
+            addNewPoints(nowNode);
+        }
+        return steps;
+    }
+
+    @Override
+    public int getCountStepsFromStartToFinish() {
+        int res = 0;
+        NodeWeigh tempNode = new NodeWeigh(nowNode);
+        while (!tempNode.equals(root)){
+            res++;
+            tempNode = tempNode.getFather();
+        }
+        return res;
     }
 }

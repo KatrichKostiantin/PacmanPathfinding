@@ -29,7 +29,7 @@ public class TreeBFS implements SearchPath {
     }
 
     @Override
-    public int getCountOfStepsToFind() {
+    public int getCountStepsToFind() {
         while (!nowNode.value.equals(finish)) {
             nowNode = getNextNode();
             addNewPoints(nowNode);
@@ -37,7 +37,19 @@ public class TreeBFS implements SearchPath {
         return steps;
     }
 
+    @Override
+    public int getCountStepsFromStartToFinish() {
+        int res = 0;
+        Node tempNode = new Node(nowNode);
+        while (!tempNode.equals(root)){
+            res++;
+            tempNode = tempNode.getFather();
+        }
+        return res;
+    }
+
     public Node getNextNode() {
+        steps++;
         return deque.poll();
     }
 
@@ -66,7 +78,6 @@ public class TreeBFS implements SearchPath {
     public void addNewPoints(Node nodeTo) {
         if (nodeTo == null || nodeTo.value.equals(finish))
             return;
-        steps++;
         for (Point point : graph.adj(nodeTo.value)) {
             if (!marked.contains(point)) {
                 marked.add(point);
