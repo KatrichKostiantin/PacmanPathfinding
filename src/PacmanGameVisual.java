@@ -1,4 +1,5 @@
 import supporting.Graph;
+import supporting.GreedyAlgorithm;
 import supporting.Point;
 import supporting.TreeBFS;
 import supporting.TreeDFS;
@@ -35,7 +36,7 @@ public class PacmanGameVisual extends JFrame {
         levelData[randomEnd.y][randomEnd.x] = 16;
         Point randomStart = searchEmptyPoint(levelData);
 
-        pacman = new Pacman(new TreeDFS(mainGraph, randomStart, randomEnd), randomStart, randomEnd);
+        pacman = new Pacman(new GreedyAlgorithm(levelData, randomStart, randomEnd), randomStart, randomEnd);
 
         initUI();
     }
