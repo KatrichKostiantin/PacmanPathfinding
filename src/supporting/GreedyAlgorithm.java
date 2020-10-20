@@ -1,70 +1,61 @@
 package supporting;
 
 import java.util.ArrayDeque;
-import java.util.Queue;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.PriorityQueue;
+
 
 public class GreedyAlgorithm implements SearchPath{
-	private int[][] h;
-	private Point goal;
+	private static Point goal;
 	private Point start;
-	private int m;
-	private int n;
-	Queue<Point> result = new ArrayDeque<Point>();
+	private PriorityQueue<Point> frontier;
+	private HashMap<Point, Point> comeFrom;
+	private ArrayDeque<Point> result;
 	
-	public GreedyAlgorithm(short[][] arr,Point start,Point goal) {
+	public GreedyAlgorithm(Graph gr,Point start,Point goal) {
 		this.goal = goal;
 		this.start = start;
-		m = arr.length;
-		n = arr[1].length;
-		h = new int[m][n];
-		for(int i=0;i<m;i++) {
-			for(int j=0;j<n;j++) {
-				if(arr[i][j]==0) h[i][j] = heuristic(i,j,goal.y,goal.x);
-				else h[i][j] = Integer.MAX_VALUE;
-			}
-		}
-		greed();
+		frontier = new PriorityQueue<Point>(PointComparator);
+		frontier.add(start);
+		comeFrom = new HashMap<Point, Point>(gr.V());  
+		result = new ArrayDeque<Point>(gr.V());
+		comeFrom.put(start,null);
+		greed(gr);
+		HashtoQueue();
 	}
 	
-	private void greed() {
-		Point curPoint = new Point(start.x,start.y);
-		result.add(curPoint);
-		int tr = 0;
-		while((curPoint.x!=goal.x || curPoint.y!=goal.y) && tr<15) {
-			curPoint = findMinCoords(curPoint.x,curPoint.y);
-			result.add(curPoint);
-			tr++;
+	private void greed(Graph gr) {
+		Point current;
+		while (!frontier.isEmpty()) {
+			   current = frontier.poll();
+			   if (current.x== goal.x && current.y == goal.y)break;
+			   for(Point next : gr.adj(current)) {
+				   if(!comeFrom.containsKey(next)) {
+					   frontier.add(next);
+					   comeFrom.put(next,current);
+				   }
+			   }
+		}
+	}
+	public static Comparator<Point> PointComparator = new Comparator<Point>(){
+        
+		@Override
+		public int compare(Point a, Point b) {
+			return heuristic(goal,a)-heuristic(goal,b);
+		}
+    };
+	private void HashtoQueue() {
+		Point cur= goal;
+		result.addFirst(goal);
+		while((cur.x != start.x || cur.y!=start.y) && comeFrom.containsKey(cur)) {
+			result.addFirst(comeFrom.get(cur));
+			cur=comeFrom.get(cur);
 		}
 	}
 	
-	private Point findMinCoords(int x,int y) {
-		int minH = h[y][x];
-		int minX = x;
-		int minY = y;
-		if(y+1<n)
-			if(h[y+1][x]<minH) {
-				minY = y+1;
-				minH =h[y+1][x];
-			}
-		if(y-1>=0)
-			if(h[y-1][x]<minH) {
-				minY = y-1;
-				minH =h[y-1][x];
-			}
-		if(x+1<m)
-			if(h[y][x+1]<minH) {
-				minX = x+1;
-				minH =h[y][x+1];
-			}
-		if(x-1>=0)
-			if(h[y][x-1]<minH) {
-				minX = x-1;
-				minH =h[y][x-1];
-			}
-		return new Point(minX,minY);
-	}
-	private int heuristic(int x1, int y1,int x2, int y2) {
-		return Math.abs(x1-x2)+Math.abs(y1-y2);
+	private static int heuristic(Point a,Point b) {
+		return Math.abs(a.x-b.x)+Math.abs(a.y-b.y);
 	}
 
 	@Override
