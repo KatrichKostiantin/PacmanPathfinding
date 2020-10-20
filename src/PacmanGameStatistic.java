@@ -25,8 +25,9 @@ public class PacmanGameStatistic {
     };
     Pacman pacman;
     Random random = new Random();
-    long searchStepsDFS = 0, searchStepsBFS = 0, searchStepsAStar = 0;
-    long stepsDFS = 0, stepsBFS = 0, stepsAStar = 0;
+    long searchStepsDFS = 0, searchStepsBFS = 0, searchStepsAStar = 0, searchStepsGreedy = 0;
+    long stepsDFS = 0, stepsBFS = 0, stepsAStar = 0, stepsGreedy = 0;
+
 
     public static void main(String[] args) {
         PacmanGameStatistic pacmanGameStatistic = new PacmanGameStatistic();
@@ -35,7 +36,7 @@ public class PacmanGameStatistic {
 
     private void start() {
         Graph mainGraph = buildGraphOnMatrix(levelData);
-        long timeDFS, timeBFS, timeAStar;
+        long timeDFS, timeBFS, timeAStar, timeGreedy;
 
         long timeStart = Instant.now().toEpochMilli();
         for (int i = 0; i < COUNT_ITERATION; i++) {
@@ -60,13 +61,22 @@ public class PacmanGameStatistic {
         timeAStar = Instant.now().toEpochMilli() - timeStart;
         searchStepsAStar /= COUNT_ITERATION;
         stepsAStar /= COUNT_ITERATION;
+        
+        timeStart = Instant.now().toEpochMilli();
+        for (int i = 0; i < COUNT_ITERATION; i++) {
+            iterationGreedy(mainGraph);
+        }
+        timeGreedy = Instant.now().toEpochMilli() - timeStart;
+        searchStepsGreedy /= COUNT_ITERATION;
+        stepsGreedy /= COUNT_ITERATION;
 
 
         System.out.println("RESULT OF " + COUNT_ITERATION + " ITERATION:\n" +
                 "DFS: Time - " + timeDFS + ", search steps - " + searchStepsDFS + ", steps - " + stepsDFS + "\n" +
                 "BFS: Time - " + timeBFS + ", search steps - " + searchStepsBFS + ", steps - " + stepsBFS + "\n" +
-                "AStar: Time - " + timeAStar + ", search steps - " + searchStepsAStar + ", steps - " + stepsAStar + "\n"
-        );
+                "AStar: Time - " + timeAStar + ", search steps - " + searchStepsAStar + ", steps - " + stepsAStar + "\n"+
+                "Greedy: Time - " + timeGreedy + ", search steps - " + searchStepsGreedy + ", steps - " + stepsGreedy + "\n"
+        		);
     }
 
     private void iterationDFS(Graph mainGraph) {
@@ -114,6 +124,20 @@ public class PacmanGameStatistic {
         stepsAStar += pacman.getSteps();
     }
 
+    private void iterationGreedy(Graph mainGraph) {
+        Graph newGraph = new Graph(mainGraph);
+        short[][] newLevelData = copyLevelData(levelData);
+        Point randomEnd = searchEmptyPoint(newLevelData);
+        newLevelData[randomEnd.y][randomEnd.x] = 16;
+        Point randomStart = searchEmptyPoint(newLevelData);
+
+        pacman = new Pacman(new GreedyAlgorithm(newGraph, randomStart, randomEnd),
+                randomStart, randomEnd);
+        Board board = new Board(newLevelData);
+        pacman.setBoard(board);
+        searchStepsGreedy += pacman.getCountOfStepsToFind();
+        stepsGreedy += pacman.getSteps();
+    }
     private Graph buildGraphOnMatrix(short[][] levelData) {
         Graph graph = new Graph(levelData.length * levelData[0].length);
         for (int y = 0; y < levelData.length; y++) {

@@ -12,6 +12,7 @@ public class GreedyAlgorithm implements SearchPath{
 	private PriorityQueue<Point> frontier;
 	private HashMap<Point, Point> comeFrom;
 	private ArrayDeque<Point> result;
+	private int steps;
 	
 	public GreedyAlgorithm(Graph gr,Point start,Point goal) {
 		this.goal = goal;
@@ -34,6 +35,7 @@ public class GreedyAlgorithm implements SearchPath{
 				   if(!comeFrom.containsKey(next)) {
 					   frontier.add(next);
 					   comeFrom.put(next,current);
+					   steps++;
 				   }
 			   }
 		}
@@ -70,6 +72,6 @@ public class GreedyAlgorithm implements SearchPath{
 
 	@Override
 	public int getCountStepsFromStartToFinish() {
-		return 0;
+		return steps;
 	}
 }
